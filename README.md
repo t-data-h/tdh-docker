@@ -15,13 +15,11 @@ from the  NameNode server via rest API call. The fsimage file is
 run through an offline image viewer which can convert block info to csv format
 for import into RDBMS, I used MySQL.
 
-​
 * FSImage Retrieval
 ```
 curl -X GET "http://$namenode:50070/imagetransfer?getimage=1&txid=latest" --output $outfile
 ```
 
-​
 * FSImage conversion to CSV
 ```
 hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile -o $oivexport_dir/fsimage-$namenode.csv
@@ -29,12 +27,8 @@ hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile -o $oivexport_dir/
 
 ​
 ## Yarn
-Yarn metrics can be easily scraped from rest apis as seen below. Prometheus is
-a preferred datastore for time-series from a simplistic point of view. Getting
-data into Prometheus requires an exporter which emits metrics in Prometheus format.
-For the following metrics I have used Go apps running inside docker containers.
-On startup I pass the endpoint host and listening port
-
+Yarn metrics can be scraped from Rest APIs as seen below. Getting data into 
+Prometheus requires an exporter which emits metrics in the Prometheus format.
 
 ```
 docker run -e YARN_PROMETHEUS_ENDPOINT_HOST=hostname \
@@ -81,12 +75,11 @@ curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/metrics"
  docker run -e YARN_PROMETHEUS_ENDPOINT_HOST=hostname \
   -e YARN_PROMETHEUS_LISTEN_ADDR=:9120  -p 9120:9120 t3/yarnapp
 ```
-​* Scrape Metrics
+
+* Metrics returned:
 ```
 curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/apps?state=running"
-```
-Metrics returned:
-```
+
     Id string
     Name string
     User string
@@ -119,8 +112,9 @@ Metrics returned:
 ``` 	
 ​
 
-## Spark
-Collecting spark metrics can be accomplished using a Graphite sink which is native to Spark builds. To be consistent with above mentioned time-series datastore, I recommend converting these metrics to Prometheus format through graphite to prometheus exporter. On edge node where spark jobs are to be launched run exporter as docker process.
+### Spark
+Collecting Spark metrics can be accomplished using a Graphite sink which is 
+native to Spark builds. 
 ​
 ```
 docker run -d -p 9108:9108 -p 9109:9109 -p 9109:9109/udp \
@@ -130,6 +124,7 @@ docker run -d -p 9108:9108 -p 9109:9109 -p 9109:9109/udp \
 
 ​
 #### Graphite Mapping file
+
 ```
 mappings:
 - match: '*.*.executor.filesystem.*.*'
@@ -232,11 +227,11 @@ executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 ​
 * Launch job with the following metrics configuration:
 ```
---conf spark.metrics.conf=/etc/spark2/conf/graphite.properties'
-​```
-​
+--conf spark.metrics.conf=/etc/spark2/conf/graphite.properties
+```
 
-### MySQL
+
+#### MySQL
 Collecting MySQL metrics is useful for keeping track of IO activity, slave
 replication status and other useful metrics and acertaining the health of Hadoop
 ecosystem as a whole. A community supported prometheus exporter has been added
@@ -244,19 +239,17 @@ and runs as docker process on reporting server.
 ​
 * https://github.com/prometheus/mysqld_exporter  
 
-​
 ```
- docker run -d \
--p 9104:9104 \
+docker run -d -p 9104:9104 \
 -e DATA_SOURCE_NAME="<user>:<password>@(<host>:3306)/" \
 prom/mysqld-exporter --no-collect.info_schema.tables --collect.info_schema.innodb_metrics
-​```
+```
 
 
 ### Here is Prometheus itself.
-​```
-s
-crape_configs:
+
+```
+scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
 
