@@ -27,8 +27,11 @@ hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile -o $oivexport_dir/
 
 ​
 ## Yarn
-Yarn metrics can be scraped from Rest APIs as seen below. Getting data into 
+Yarn metrics can be scraped from Rest APIs as seen below. Getting data into
 Prometheus requires an exporter which emits metrics in the Prometheus format.
+This makes use of the YARN Prometheus exporter:
+
+*https://github.com/PBWebMedia/yarn-prometheus-exporter*
 
 ```
 docker run -e YARN_PROMETHEUS_ENDPOINT_HOST=hostname \
@@ -113,8 +116,8 @@ curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/apps?state=running"
 ​
 
 ### Spark
-Collecting Spark metrics can be accomplished using a Graphite sink which is 
-native to Spark builds. 
+Collecting Spark metrics can be accomplished using a Graphite sink which is
+native to Spark builds.
 ​
 ```
 docker run -d -p 9108:9108 -p 9109:9109 -p 9109:9109/udp \
