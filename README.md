@@ -17,7 +17,7 @@ for import into RDBMS, I used MySQL.
 
 * FSImage Retrieval
 ```
-curl -X GET "http://$namenode:50070/imagetransfer?getimage=1&txid=latest" --output $outfile
+curl -X GET "http://$nn:50070/imagetransfer?getimage=1&txid=latest" --output $outfile
 ```
 
 * FSImage conversion to CSV
