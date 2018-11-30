@@ -18,7 +18,7 @@ fi
 
 volname="${name}-vol1"
 
-( docker run --name tdh-mysql1 \
+( docker run --name tdh-mysql1 -p3306:3307 \
   --mount "type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf" \
   --mount "type=volume,source=${volname},target=/var/lib/mysql" \
   --env MYSQL_RANDOM_ROOT_PASSWORD=true \
