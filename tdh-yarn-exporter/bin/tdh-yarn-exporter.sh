@@ -1,6 +1,11 @@
 #!/bin/bash
 #
 
+name="$1"
+
+if [ -z "$name" ]; then
+    name="tdh-yarn-exporter1"
+fi
 
 ( docker run \
   --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
