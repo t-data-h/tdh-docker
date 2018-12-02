@@ -6,7 +6,7 @@ TDH-Docker
 
 
 # Hadoop Metrics
-A document on available metrics for the Hadoop ecosystem and methods to perform time-series analysis on them.
+ A set of containers for deploying Prometheus for collecting various hadoop metrics.
 
 ​
 ## HDFS
@@ -22,22 +22,16 @@ curl -X GET "http://$nn:50070/imagetransfer?getimage=1&txid=latest" --output $ou
 
 * FSImage conversion to CSV
 ```
-hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile -o $oivexport_dir/fsimage-$namenode.csv
+hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile \
+-o $oivexport_dir/fsimage-$namenode.csv
 ```
 
-​
 ## Yarn
 Yarn metrics can be scraped from Rest APIs as seen below. Getting data into
 Prometheus requires an exporter which emits metrics in the Prometheus format.
 This makes use of the YARN Prometheus exporter:
 
 *https://github.com/PBWebMedia/yarn-prometheus-exporter*
-
-```
-docker run -e YARN_PROMETHEUS_ENDPOINT_HOST=hostname \
-  -e YARN_PROMETHEUS_LISTEN_ADDR=:9113  
-  -p 9113:9113 pbweb/yarn-prometheus-exporter
-```
 
 * Example Yarn Rest API metrics scraped
 ```
@@ -114,19 +108,13 @@ curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/apps?state=running"
     LogAggregationStatus string
 ``` 	
 
-### Spark
+## Spark
 Collecting Spark metrics can be accomplished using a Graphite sink which is
 native to Spark builds.
 
-```
-docker run -d -p 9108:9108 -p 9109:9109 -p 9109:9109/udp \
-  -v $PWD/graphite_mapping.conf:/tmp/graphite_mapping.conf \
-  prom/graphite-exporter --graphite.mapping-config=/tmp/graphite_mapping.conf
-```
-
 #### Graphite Properties file
 Distribute the following conf file to driver and all executor nodes. All should
-be in same path **graphite.properties**
+be in same path *graphite.properties*
 
 * Enable Prometheus for all instances by class name
 ```
@@ -151,10 +139,10 @@ executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 --conf spark.metrics.conf=/etc/spark2/conf/graphite.properties
 ```
 
-#### MySQL
+## MySQL
 Collecting MySQL metrics is useful for keeping track of IO activity, slave
-replication status and other useful metrics and acertaining the health of Hadoop
-ecosystem as a whole. A community supported prometheus exporter has been added
+replication status and other useful metrics and ascertaining the health of Hadoop
+ecosystem as a whole. A community supported Prometheus exporter has been added
 and runs as docker process on reporting server.
 
 * https://github.com/prometheus/mysqld_exporter  
@@ -164,5 +152,3 @@ docker run -d -p 9104:9104 \
 -e DATA_SOURCE_NAME="<user>:<password>@(<host>:3306)/" \
 prom/mysqld-exporter --no-collect.info_schema.tables --collect.info_schema.innodb_metrics
 ```
-
-

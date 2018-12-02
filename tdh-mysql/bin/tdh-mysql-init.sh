@@ -49,4 +49,4 @@ sleep 3
 passwd=$( docker logs tdh-mysql1 2>&1 | grep GENERATED | awk -F': ' '{ print $2 }' )
 echo "passwd='$passwd'"
 
-exit 0
+exit $res
