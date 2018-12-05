@@ -1,6 +1,7 @@
 #!/bin/bash
+#
 
-tag="tdh"
+tag="tdh-centos7"
 
 if [ -n "$1" ]; then
     tag="$1"
