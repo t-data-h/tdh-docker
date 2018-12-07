@@ -1,15 +1,15 @@
-TDH-Docker - Version 0.21
-=========================
+TDH-Docker - Version 0.2.2
+==========================
 
 
-  A collection of docker containers for supporting TDH.
+  A collection of docker containers for supporting TDH activities. 
 
 
-# Hadoop Metrics
+## Hadoop Metrics
  A set of containers for deploying Prometheus for collecting various hadoop metrics.
 
 ​
-## HDFS
+### HDFS
 HDFS filesystem analysis can be performed through the extraction of fsimage files
 from the  NameNode server via rest API call. The fsimage file is
 run through an offline image viewer which can convert block info to csv format
@@ -26,7 +26,7 @@ hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile \
 -o $oivexport_dir/fsimage-$namenode.csv
 ```
 
-## Yarn
+### Yarn
 Yarn metrics can be scraped from Rest APIs as seen below. Getting data into
 Prometheus requires an exporter which emits metrics in the Prometheus format.
 This makes use of the YARN Prometheus exporter:
@@ -108,11 +108,11 @@ curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/apps?state=running"
     LogAggregationStatus string
 ``` 	
 
-## Spark
+### Spark
 Collecting Spark metrics can be accomplished using a Graphite sink which is
 native to Spark builds.
 
-#### Graphite Properties file
+#### Graphite Properties 
 Distribute the following conf file to driver and all executor nodes. All should
 be in same path *graphite.properties*
 
@@ -139,7 +139,7 @@ executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 --conf spark.metrics.conf=/etc/spark2/conf/graphite.properties
 ```
 
-## MySQL
+### MySQL
 Collecting MySQL metrics is useful for keeping track of IO activity, slave
 replication status and other useful metrics and ascertaining the health of Hadoop
 ecosystem as a whole. A community supported Prometheus exporter has been added
