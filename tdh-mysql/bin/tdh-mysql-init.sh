@@ -19,7 +19,7 @@ fi
 
 if [ -z "$port" ]; then
     port=3307
-    echo "Default local port set to $port"
+    echo "Host local port set to $port"
 fi
 
 volname="${name}-vol1"
@@ -27,12 +27,13 @@ volname="${name}-vol1"
 echo "Initializing Docker container instance as '$name'"
 echo "    with volume '$volname'"
 
-( docker run --name $name -p${port}:3306 \
+
+( docker run --name $name -p${port}:3306 -d \
   --mount "type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf" \
   --mount "type=volume,source=${volname},target=/var/lib/mysql" \
   --env MYSQL_RANDOM_ROOT_PASSWORD=true \
   --env MYSQL_LOG_CONSOLE=true \
-  -d mysql/mysql-server:5.7 \
+  mysql/mysql-server:5.7 \
   --character-set-server=utf8 --collation-server=utf8_general_ci )
 
 #  initialization scripts
