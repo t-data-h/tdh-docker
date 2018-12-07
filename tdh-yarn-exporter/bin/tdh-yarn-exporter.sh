@@ -32,8 +32,7 @@ echo "Starting container '$name'"
 res=$?
 
 if [ $res -ne 0 ]; then
-    echo "ERROR in $PNAME, abort..."
-    exit $res
+    echo "ERROR in run for $PNAME"
 fi
 
 exit $res

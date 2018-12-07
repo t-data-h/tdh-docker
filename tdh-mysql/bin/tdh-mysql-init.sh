@@ -42,7 +42,7 @@ echo "    with volume '$volname'"
 res=$?
 
 if [ $res -ne 0 ]; then
-    echo "ERROR in $PNAME, abort..."
+    echo "ERROR in run for $PNAME"
     exit $res
 fi
 
