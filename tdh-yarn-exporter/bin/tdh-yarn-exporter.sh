@@ -12,11 +12,11 @@ if [ -z "$name" ]; then
 fi
 
 if [ -z "$rmhost" ]; then
-    rmhost="localhost"
+    rmhost=localhost
 fi
 
 if [ -z "$rmport" ]; then
-    rmport = "8088"
+    rmport=8088
 fi
 
 echo "Starting container '$name'"
@@ -29,7 +29,7 @@ echo "Starting container '$name'"
   --env YARN_PROMETHEUS_ENDPOINT_PATH="ws/v1/cluster/metrics" \
   -p 9113:9113 pbweb/yarn-prometheus-exporter )
 
- res=$?
+res=$?
 
 if [ $res -ne 0 ]; then
     echo "ERROR in $PNAME, abort..."
