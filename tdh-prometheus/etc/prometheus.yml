@@ -3,24 +3,25 @@ scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped
   # from this config.
   - job_name: 'prometheus'
-
     #metrics_path: /ws/v1/cluster/metrics
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
-
     static_configs:
     - targets: ['localhost:9090']
 
   - job_name: 'yarn-tdh'
     static_configs:
     - targets: ['localhost:9113']
+
   - job_name: 'yarnapps-tdh'
     static_configs:
     - targets: ['localhost:9114']
+
   - job_name: 'mysql-callisto'
     scrape_interval: 300s
     static_configs:
     - targets: ['localhost:9104']
+
   - job_name: 'spark-tdh'
     static_configs:
     - targets: ['localhost:9108']
