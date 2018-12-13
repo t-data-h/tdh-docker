@@ -22,7 +22,6 @@ echo "Starting container '$name'"
   --env YARN_PROMETHEUS_ENDPOINT_PORT=8088 \
   --env YARN_PROMETHEUS_ENDPOINT_PATH="ws/v1/cluster/apps?state=running" \
   pbweb/yarn-prometheus-exporter )
-
   
 res=$?
 

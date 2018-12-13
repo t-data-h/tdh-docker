@@ -27,6 +27,7 @@ fi
 echo "Starting container '$name'"
 echo "YARN Endpoint set to http://${rmhost}:${rmport}"
 
+
 ( docker run --name ${name} -p ${port}:9113 -d \
   --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
   --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
