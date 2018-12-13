@@ -17,12 +17,12 @@ fi
 volname="${name}-data"
 
 if [ -z "$port" ]; then
-    port=9090
+    port=9091
 fi
 
 echo "Starting container '$name'"
 
-( docker run --name $name -p${port}:9090 -d \
+( docker run --name $name -p${port}:9091 -d \
   --mount "type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml" \
   --mount "type=volume,source=$volname,target=/prometheus-data" \
   prom/prometheus )

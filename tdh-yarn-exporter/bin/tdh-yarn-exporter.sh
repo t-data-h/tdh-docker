@@ -3,12 +3,17 @@
 PNAME=${0##*\/}
 
 name="$1"
-rmhost="$2"
-rmport="$3"
+port="$2"
+rmhost="$3"
+rmport="$4"
 res=
 
 if [ -z "$name" ]; then
     name="tdh-yarn-exporter1"
+fi
+
+if [ -z "$port" ]; then
+    port=9113
 fi
 
 if [ -z "$rmhost" ]; then
@@ -16,12 +21,13 @@ if [ -z "$rmhost" ]; then
 fi
 
 if [ -z "$rmport" ]; then
-    rmport=8088
+    rmport=8050
 fi
 
 echo "Starting container '$name'"
+echo "YARN Endpoint set to http://${rmhost}:${rmport}"
 
-( docker run --name $name -p 9113:9113 -d \
+( docker run --name ${name} -p ${port}:9113 -d \
   --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
   --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
   --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
