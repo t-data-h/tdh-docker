@@ -2,27 +2,102 @@
 #
 PNAME=${0##*\/}
 
-name="$1"
-port="$2"
+name="tdh-yarnapps-exporter1"
+port="9114"
+rmhost="localhost"
+rmport="8050"
+path="ws/v1/cluster/apps?state=running"
+network=
 res=
+ACTION=
 
-if [ -z "$name" ]; then
-    name="tdh-yarnapps-exporter1"
+
+usage()
+{
+    echo ""
+    echo "Usage: $PNAME [options] run|start"
+    echo "   -h|--help             = Display usage and exit."
+    echo "   -N|--network <name>   = Attach container to Docker network"
+    echo "   -n|--name <name>      = Name of the Docker Container instance."
+    echo "   -p|--port <port>      = Local bind port for the container."
+    echo "   -R|--rmhost <host>    = Hostname of the RM Master."
+    echo "   -P|--rmport <port>    = Port number for the ResourceManager"
+    echo " Any other action than 'run|start' results in a dry run."
+    echo " The container will only start with the run or start action"
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        -N|--network)
+            network="$2"
+            shift
+            ;;
+        -n|--name)
+            name="$2"
+            shift
+            ;;
+        -p|--port)
+            port="$2"
+            shift
+            ;;
+        -R|--rmhost)
+            rmhost="$2"
+            shift
+            ;;
+        -P|--rmport)
+            rmport="$2"
+            shift 
+            ;;
+        *)
+            ACTION="$1"
+            shift
+            ;;
+    esac
+    shift
+done
+
+
+if [ -z "$ACTION" ]; then 
+    usage
 fi
-if [ -z "$port" ]; then
-    port="9114"
+
+cmd="docker run --name $name -p ${port}:9114 -d"
+
+if [ -n "$network" ]; then
+    cmd="$cmd --network ${network}"
 fi
 
-echo "Starting container '$name'"
+cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9114 \
+--env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
+--env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
+--env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
+--env YARN_PROMETHEUS_ENDPOINT_PATH=\"$path\" \
+pbweb/yarn-prometheus-exporter"
 
-( docker run --name $name -p ${port}:9114 -d \
-  --env YARN_PROMETHEUS_LISTEN_ADDR=:9114 \
-  --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
-  --env YARN_PROMETHEUS_ENDPOINT_HOST=localhost \
-  --env YARN_PROMETHEUS_ENDPOINT_PORT=8088 \
-  --env YARN_PROMETHEUS_ENDPOINT_PATH="ws/v1/cluster/apps?state=running" \
-  pbweb/yarn-prometheus-exporter )
-  
+
+echo ""
+echo "  TDH Docker Container: '$name'"
+echo "  YARN Endpoint: http://${rmhost}:${rmport}"
+echo "  Local port: $port"
+echo ""
+
+ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
+
+if [ "$ACTION" == "run" ] || [ "$ACTION" == "start"]; then
+    echo "Starting container $name"
+
+    ( $cmd )
+else
+    echo "  <DRYRUN> - Command to exec would be: "
+    echo ""
+    echo " ( $cmd ) " 
+    echo ""
+fi
+
 res=$?
 
 if [ $res -ne 0 ]; then
