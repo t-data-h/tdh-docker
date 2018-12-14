@@ -2,17 +2,21 @@
 #
 PNAME=${0##*\/}
 
-name=
-port=
-rmhost=
-rmport=
+name="tdh-yarn-exporter1"
+port="9113"
+rmhost="localhost"
+rmport="8050"
+path="ws/v1/cluster/metrics"
+network=
 res=
+ACTION=
 
 usage()
 {
     echo ""
     echo "Usage: $PNAME [options] run|start"
     echo "   -h|--help             = Display usage and exit."
+    echo "   -N|--network <name>   = Attach container to Docker network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container."
     echo "   -R|--rmhost <host>    = Hostname of the RM Master."
@@ -26,6 +30,10 @@ while [ $# -gt 0 ]; do
         -h|--help)
             usage
             exit 0
+            ;;
+        -N|--network)
+            network="$2"
+            shift
             ;;
         -n|--name)
             name="$2"
@@ -52,19 +60,22 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ -z "$name" ]; then
-    name="tdh-yarn-exporter1"
-fi
-if [ -z "$port" ]; then
-    port=9113
+if [ -z "$ACTION" ]; then 
+    usage
 fi
 
-if [ -z "$rmhost" ]; then
-    rmhost=localhost
+cmd="docker run --name $name -p ${port}:9113 -d"
+
+if [ -n "$network" ]; then
+    cmd="$cmd --network ${network}"
 fi
-if [ -z "$rmport" ]; then
-    rmport=8050
-fi
+
+cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
+--env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
+--env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
+--env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
+--env YARN_PROMETHEUS_ENDPOINT_PATH=\"$path\" \
+pbweb/yarn-prometheus-exporter"
 
 echo ""
 echo "  TDH Docker Container: '$name'"
@@ -76,22 +87,12 @@ ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
 if [ "$ACTION" == "run" ] || [ "$ACTION" == "start"]; then
     echo "Starting container $name"
-    ( docker run --name ${name} -p ${port}:9113 -d \
-      --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
-      --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
-      --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
-      --env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
-      --env YARN_PROMETHEUS_ENDPOINT_PATH="ws/v1/cluster/metrics" \
-      pbweb/yarn-prometheus-exporter )
+
+    ( $cmd )
 else
-    echo "  <DRYRUN> - Command to exec would be: "; echo ""
-    echo "( docker run --name ${name} -p ${port}:9113 -d \\ "
-    echo "  --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \\ "
-    echo "  --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \\ "
-    echo "  --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \\ "
-    echo "  --env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \\ "
-    echo "  --env YARN_PROMETHEUS_ENDPOINT_PATH=ws/v1/cluster/metrics \\ "
-    echo "  pbweb/yarn-prometheus-exporter )"
+    echo "  <DRYRUN> - Command to exec would be: "
+    echo ""
+    echo " ( $cmd ) " 
     echo ""
 fi
 

@@ -5,16 +5,19 @@
 PNAME=${0##*\/}
 
 tdh_path=$(dirname "$(readlink -f "$0")")
-name=
-port=
+name="tdh-prometheus1"
+port="9091"
 volname=
+network=
 res=
+ACTION=
 
 usage()
 {
     echo ""
     echo "Usage: $PNAME [options] run|start"
     echo "   -h|--help             = Display usage and exit."
+    echo "   -N|--network <name>   = Attach container to Docker network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container."
     echo "   -v|--volume <name>    = Optional volume name. Defaults to \$name-data"
@@ -31,6 +34,10 @@ while [ $# -gt 0 ]; do
             ;;
         -n|--name)
             name="$2"
+            shift
+            ;;
+        -N|--network)
+            network="$2"
             shift
             ;;
         -p|--port)
@@ -57,14 +64,18 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-if [ -z "$name" ]; then
-    name="tdh-prometheus1"
-fi
-if [ -z "$port" ]; then
-    port=9091
+volname="${name}-data"
+
+cmd="docker run --name $name -p ${port}:9090 -d"
+
+if [ -n "$network" ]; then
+    cmd="$cmd --network ${network}"
 fi
 
-volname="${name}-data"
+cmd="$cmd --mount \"type=bind,src=${tdh_path}/../etc/prometheus.yml,\
+dst=/etc/prometheus/prometheus.yml\" \
+--mount \"type=volume,source=${volname},target=/prometheus-data\" \
+prom/prometheus"
 
 echo ""
 echo "  TDH Docker Container: '$name'"
@@ -76,16 +87,11 @@ ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
 if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
-    ( docker run --name $name -p ${port}:9090 -d \
-      --mount "type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml" \
-      --mount "type=volume,source=$volname,target=/prometheus-data" \
-      prom/prometheus )
+
+    ( $cmd )
 else
     echo "  <DRYRUN> - Command to exec would be: "; echo ""
-    echo "( docker run --name ${name} -p ${port}:9090 -d \\ "
-    echo "  --mount type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml \\ " 
-    echo "  --mount type=volume,source=$volname,target=/prometheus-data \\ "
-    echo "  prom/prometheus )"
+    echo "$cmd"
     echo ""
  fi
 
