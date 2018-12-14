@@ -64,7 +64,6 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-
 volname="${name}-data"
 
 cmd="docker run --name $name -p ${port}:9090 -d"
