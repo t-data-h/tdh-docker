@@ -11,7 +11,7 @@ res=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] <run>"
+    echo "Usage: $PNAME [options] run|start"
     echo "   -h|--help             = Display usage and exit."
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container."
@@ -28,19 +28,19 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
         -n|--name)
-            name="$1"
+            name="$2"
             shift
             ;;
         -p|--port)
-            port="$1"
+            port="$2"
             shift
             ;;
         -R|--rmhost)
-            rmhost="$1"
+            rmhost="$2"
             shift
             ;;
         -P|--rmport)
-            rmport="$1"
+            rmport="$2"
             shift 
             ;;
         *)
@@ -69,10 +69,14 @@ if [ -z "$rmport" ]; then
 fi
 
 echo ""
-echo "Container '$name' "
-echo "  YARN Endpoint set to http://${rmhost}:${rmport}"
+echo "  TDH Docker Container: '$name'"
+echo "  YARN Endpoint: http://${rmhost}:${rmport}"
+echo "  Local port: $port"
+echo ""
 
-if [ "$ACTION" == "run" ]; then
+ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
+
+if [ "$ACTION" == "run" ] || [ "$ACTION" == "start"]; then
     echo "Starting container $name"
     ( docker run --name ${name} -p ${port}:9113 -d \
       --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
@@ -82,15 +86,14 @@ if [ "$ACTION" == "run" ]; then
       --env YARN_PROMETHEUS_ENDPOINT_PATH="ws/v1/cluster/metrics" \
       pbweb/yarn-prometheus-exporter )
 else
-    echo ""
-    echo "Dry Run - Command would be: "
-    echo "docker run --name ${name} -p ${port}:9113 -d \\ "
+    echo "  <DRYRUN> - Command to exec would be: "; echo ""
+    echo "( docker run --name ${name} -p ${port}:9113 -d \\ "
     echo "  --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \\ "
     echo "  --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \\ "
     echo "  --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \\ "
     echo "  --env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \\ "
     echo "  --env YARN_PROMETHEUS_ENDPOINT_PATH=ws/v1/cluster/metrics \\ "
-    echo "  pbweb/yarn-prometheus-exporter "
+    echo "  pbweb/yarn-prometheus-exporter )"
     echo ""
 fi
 
