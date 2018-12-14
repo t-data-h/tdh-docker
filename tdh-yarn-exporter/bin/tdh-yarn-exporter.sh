@@ -55,7 +55,6 @@ done
 if [ -z "$name" ]; then
     name="tdh-yarn-exporter1"
 fi
-
 if [ -z "$port" ]; then
     port=9113
 fi
@@ -63,7 +62,6 @@ fi
 if [ -z "$rmhost" ]; then
     rmhost=localhost
 fi
-
 if [ -z "$rmport" ]; then
     rmport=8050
 fi

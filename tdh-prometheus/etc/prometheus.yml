@@ -12,15 +12,15 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9113']
 
-  - job_name: 'yarnapps-tdh'
-    static_configs:
-    - targets: ['localhost:9114']
+  #- job_name: 'yarnapps-tdh'
+    #static_configs:
+    #- targets: ['localhost:9114']
 
-  - job_name: 'mysql-callisto'
-    scrape_interval: 300s
-    static_configs:
-    - targets: ['localhost:9104']
+  #- job_name: 'mysql-callisto'
+    #scrape_interval: 300s
+    #static_configs:
+    #- targets: ['localhost:9104']
 
-  - job_name: 'spark-tdh'
-    static_configs:
-    - targets: ['localhost:9108']
+  #- job_name: 'spark-tdh'
+    #static_configs:
+    #- targets: ['localhost:9108']

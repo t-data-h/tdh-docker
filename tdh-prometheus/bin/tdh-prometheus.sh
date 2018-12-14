@@ -60,7 +60,6 @@ fi
 if [ -z "$name" ]; then
     name="tdh-prometheus1"
 fi
-
 if [ -z "$port" ]; then
     port=9091
 fi
@@ -77,13 +76,13 @@ ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
 if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
-    ( docker run --name $name -p ${port}:9091 -d \
+    ( docker run --name $name -p ${port}:9090 -d \
       --mount "type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml" \
       --mount "type=volume,source=$volname,target=/prometheus-data" \
       prom/prometheus )
 else
     echo "  <DRYRUN> - Command to exec would be: "; echo ""
-    echo "( docker run --name ${name} -p ${port}:9091 -d \\ "
+    echo "( docker run --name ${name} -p ${port}:9090 -d \\ "
     echo "  --mount type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml \\ " 
     echo "  --mount type=volume,source=$volname,target=/prometheus-data \\ "
     echo "  prom/prometheus )"
