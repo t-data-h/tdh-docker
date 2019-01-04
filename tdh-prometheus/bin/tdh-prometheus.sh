@@ -26,6 +26,24 @@ usage()
 }
 
 
+validate_network()
+{
+    local net="$1"
+    local res=
+
+    res=$( docker network ls | awk '{print $2 }' | grep "$net" )
+
+    if [ -z "$res" ]; then
+        echo "Creating bridge network: $net"
+        ( docker network create --driver bridge $net )
+    else
+        echo "Attaching container to existing network '$net'"
+    fi
+
+    return 0
+}
+
+
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
@@ -72,10 +90,8 @@ if [ -n "$network" ]; then
     cmd="$cmd --network ${network}"
 fi
 
-cmd="$cmd --mount \"type=bind,src=${tdh_path}/../etc/prometheus.yml,\
-dst=/etc/prometheus/prometheus.yml\" \
---mount \"type=volume,source=${volname},target=/prometheus-data\" \
-prom/prometheus"
+cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml"
+cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data prom/prometheus"
 
 echo ""
 echo "  TDH Docker Container: '$name'"

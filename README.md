@@ -149,6 +149,6 @@ and runs as docker process on reporting server.
 
 ```
 docker run -d -p 9104:9104 \
--e DATA_SOURCE_NAME="<user>:<password>@(<host>:3306)/" \
-prom/mysqld-exporter --no-collect.info_schema.tables --collect.info_schema.innodb_metrics
+  -e DATA_SOURCE_NAME="<user>:<password>@(<host>:3306)/" \
+  prom/mysqld-exporter --no-collect.info_schema.tables --collect.info_schema.innodb_metrics
 ```

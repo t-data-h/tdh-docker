@@ -26,6 +26,7 @@ usage()
     echo " The container will only start with the run or start action"
 }
 
+
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
