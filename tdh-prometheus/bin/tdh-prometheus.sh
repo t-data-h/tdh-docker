@@ -87,6 +87,7 @@ volname="${name}-data"
 cmd="docker run --name $name -p ${port}:9090 -d"
 
 if [ -n "$network" ]; then
+    validate_network "$network"
     cmd="$cmd --network ${network}"
 fi
 
