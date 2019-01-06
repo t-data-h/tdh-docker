@@ -26,6 +26,27 @@ usage()
     echo " The container will only start with the run or start action"
 }
 
+
+validate_network()
+{
+    local net="$1"
+    local res=
+
+    res=$( docker network ls | awk '{print $2 }' | grep "$net" )
+
+    if [ -z "$res" ]; then
+        echo "Creating bridge network: $net"
+        ( docker network create --driver bridge $net )
+    else
+        echo "Attaching container to existing network '$net'"
+    fi
+
+    return 0
+}
+
+
+# MAIN
+
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
@@ -68,6 +89,7 @@ fi
 cmd="docker run --name $name -p ${port}:9114 -d"
 
 if [ -n "$network" ]; then
+    validate_network "$network"
     cmd="$cmd --network ${network}"
 fi
 
@@ -92,7 +114,7 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start"]; then
 
     ( $cmd )
 else
-    echo "  <DRYRUN> - Command to exec would be: "
+    echo "  <DRYRUN> - Command to run: "
     echo ""
     echo " ( $cmd ) " 
     echo ""

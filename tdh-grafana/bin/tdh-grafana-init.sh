@@ -29,7 +29,6 @@ usage()
 }
 
 
-
 validate_network()
 {
     local net="$1"
@@ -47,6 +46,8 @@ validate_network()
     return 0
 }
 
+
+# MAIN
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -109,7 +110,7 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     ( $cmd )
 
 else
-    echo "  <DRYRUN> - Command to exec would be: "; echo ""
+    echo "  <DRYRUN> - Command to run: "; echo ""
     echo "( $cmd )"
     echo ""
 fi

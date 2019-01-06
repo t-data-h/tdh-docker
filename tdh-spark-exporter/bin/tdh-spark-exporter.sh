@@ -83,7 +83,6 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-
 cmd="docker run --name $name -p 9108:9108 -p 9109:9109 -p 9109:9109/udp -d"
 
 if [ -n "$network" ]; then
@@ -108,7 +107,7 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
 
     ( $cmd )
 else
-    echo "  <DRYRUN> - Command to exec would be: "; echo ""
+    echo "  <DRYRUN> - Command to run: "; echo ""
     echo "$cmd"
     echo ""
  fi
