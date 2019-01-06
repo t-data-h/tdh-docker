@@ -3,6 +3,7 @@
 #  Initialize the spark-exporter container
 #
 #  --conf spark.metrics.conf=/etc/spark2/conf/graphite.properties
+#
 PNAME=${0##*\/}
 
 name="$1"
