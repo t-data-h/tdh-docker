@@ -7,11 +7,13 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 name="tdh-grafana1"
+port="3000"
 network=
 volname=
 res=
 ACTION=
 
+grafana_version="5.4.2"
 
 
 usage()
@@ -90,7 +92,7 @@ cmd="$cmd  \
 --mount \"type=volume,source=${volname},target=/var/lib/grafana\" \
 --env MYSQL_RANDOM_ROOT_PASSWORD=true \
 --env "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
-grafana/grafana:5.4.2"
+grafana/grafana:${grafana_version}"
 
 
 echo ""
