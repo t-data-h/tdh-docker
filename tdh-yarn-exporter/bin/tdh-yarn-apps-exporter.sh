@@ -22,8 +22,10 @@ usage()
     echo "   -p|--port <port>      = Local bind port for the container."
     echo "   -R|--rmhost <host>    = Hostname of the RM Master."
     echo "   -P|--rmport <port>    = Port number for the ResourceManager"
-    echo " Any other action than 'run|start' results in a dry run."
-    echo " The container will only start with the run or start action"
+    echo ""
+    echo "Any other action than 'run|start' results in a dry run."
+    echo "The container will only start with the run or start action"
+    echo ""
 }
 
 
