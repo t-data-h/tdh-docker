@@ -20,12 +20,14 @@ usage()
 {
     echo ""
     echo "Usage: $PNAME [options] run|start"
-    echo "   -h|--help             = Display usage and exit."
-    echo "   -N|--network <name>   = Attach container to Docker network"
-    echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -p|--port <port>      = Local bind port for the container."
-    echo " Any other action than 'run|start' results in a dry run."
-    echo " The container will only start with the run or start action"
+    echo "   -h|--help            = Display usage and exit."
+    echo "   -N|--network <name>  = Attach container to Docker network"
+    echo "   -n|--name <name>     = Name of the Docker Container instance."
+    echo "   -p|--port <port>     = Local bind port for the container."
+    echo ""
+    echo "Any other action than 'run|start' results in a dry run."
+    echo "The container will only start with the run or start action"
+    echo ""
 }
 
 
@@ -89,7 +91,7 @@ if [ -n "$network" ]; then
 fi
 
 
-cmd="$cmd  \
+cmd="$cmd \
 --mount \"type=volume,source=${volname},target=/var/lib/grafana\" \
 --env MYSQL_RANDOM_ROOT_PASSWORD=true \
 --env "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
