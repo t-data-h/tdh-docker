@@ -82,8 +82,8 @@ if [ -n "$network" ]; then
     cmd="$cmd --network $network"
 fi
 
-cmd="$cmd --mount \"type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf\" \
---mount \"type=volume,source=${volname},target=/var/lib/mysql\" \
+cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf \
+--mount type=volume,source=${volname},target=/var/lib/mysql \
 --env MYSQL_RANDOM_ROOT_PASSWORD=true \
 --env MYSQL_LOG_CONSOLE=true \
 mysql/mysql-server:5.7 \

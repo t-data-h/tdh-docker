@@ -92,7 +92,8 @@ if [ -n "$network" ]; then
     cmd="$cmd --network ${network}"
 fi
 
-cmd="$cmd --mount \"type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tmp/graphite_mapping.conf\""
+
+cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tmp/graphite_mapping.conf"
 cdm="$cmd prom/graphite-exporter --graphite.mapping-config=/tmp/graphite_mapping.conf" 
 
 

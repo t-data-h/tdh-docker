@@ -91,11 +91,10 @@ if [ -n "$network" ]; then
 fi
 
 
-cmd="$cmd \
---mount \"type=volume,source=${volname},target=/var/lib/grafana\" \
---env MYSQL_RANDOM_ROOT_PASSWORD=true \
---env "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
-grafana/grafana:${grafana_version}"
+cmd="$cmd --mount type=volume,source=${volname},target=/var/lib/grafana"
+cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
+cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" 
+cmd="$cmd grafana/grafana:${grafana_version}"
 
 
 echo ""
