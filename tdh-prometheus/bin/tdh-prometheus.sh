@@ -101,7 +101,7 @@ cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data prom/pro
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: $volname"
+echo "  Container Volume Name: '$volname'"
 echo "  Local port: $port"
 echo ""
 
