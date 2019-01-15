@@ -100,7 +100,7 @@ grafana/grafana:${grafana_version}"
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: $volume"
+echo "  Container Volume Name: $volname"
 echo "  Local port: $port"
 echo "" 
 
