@@ -6,21 +6,21 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-    - targets: ['tdh-prometheus:9090']
+    - targets: ['tdh-prometheus1:9090']
 
   - job_name: 'yarn-tdh'
     static_configs:
-    - targets: ['tdh-yarn-exporter:9113']
+    - targets: ['tdh-yarn-exporter1:9113']
 
   #- job_name: 'yarnapps-tdh'
     #static_configs:
-    #- targets: ['localhost:9114']
+    #- targets: ['tdh-yarnapps-exporter1:9114']
 
   #- job_name: 'mysql-callisto'
     #scrape_interval: 300s
     #static_configs:
-    #- targets: ['localhost:9104']
+    #- targets: ['tdh-mysql-exporter1:9104']
 
   #- job_name: 'spark-tdh'
     #static_configs:
-    #- targets: ['localhost:9108']
+    #- targets: ['tdh-spark-exporter1:9108']

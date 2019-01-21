@@ -6,7 +6,7 @@
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
-name="tdh-spark1"
+name="tdh-spark-exporter1"
 network=
 res=
 ACTION=
