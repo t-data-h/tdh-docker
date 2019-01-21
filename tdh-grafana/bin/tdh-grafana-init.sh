@@ -87,9 +87,11 @@ cmd="docker run --name $name -p $port:3000 -d"
 
 if [ -n "$network" ]; then 
     validate_network "$network"
-    cmd="$cmd --network $network"
+else
+    network="host"
 fi
 
+cmd="$cmd --network $network"
 
 cmd="$cmd --mount type=volume,source=${volname},target=/var/lib/grafana"
 cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
@@ -100,6 +102,7 @@ cmd="$cmd grafana/grafana:${grafana_version}"
 echo ""
 echo "  TDH Docker Container: '$name'"
 echo "  Container Volume Name: '$volname'"
+echo "  Network: $network"
 echo "  Local port: $port"
 echo "" 
 

@@ -90,8 +90,12 @@ cmd="docker run --name $name -p ${port}:9113 -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
-    cmd="$cmd --network ${network}"
+else
+    network="host"
 fi
+
+cmd="$cmd --network ${network}"
+
 
 cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
 --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
@@ -103,6 +107,7 @@ pbweb/yarn-prometheus-exporter"
 echo ""
 echo "  TDH Docker Container: '$name'"
 echo "  YARN Endpoint: http://${rmhost}:${rmport}"
+echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
 

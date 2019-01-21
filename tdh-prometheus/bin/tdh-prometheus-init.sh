@@ -17,7 +17,7 @@ usage()
     echo ""
     echo "Usage: $PNAME [options] run|start"
     echo "   -h|--help             = Display usage and exit."
-    echo "   -N|--network <name>   = Attach container to Docker network"
+    echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container."
     echo "   -v|--volume <name>    = Optional volume name. Defaults to \$name-data"
@@ -102,6 +102,7 @@ cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data prom/pro
 echo ""
 echo "  TDH Docker Container: '$name'"
 echo "  Container Volume Name: '$volname'"
+echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
 
@@ -112,7 +113,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
 
     ( $cmd )
 else
-    echo "  <DRYRUN> - Command to run: "; echo ""
+    echo "  <DRYRUN> - Command to run: "
+    echo ""
     echo "$cmd"
     echo ""
  fi

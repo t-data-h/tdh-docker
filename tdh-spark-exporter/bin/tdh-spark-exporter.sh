@@ -89,8 +89,11 @@ cmd="docker run --name $name -p 9108:9108 -p 9109:9109 -p 9109:9109/udp -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
-    cmd="$cmd --network ${network}"
+else 
+    network="host"
 fi
+
+cmd="$cmd --network ${network}"
 
 
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tmp/graphite_mapping.conf"
@@ -99,7 +102,8 @@ cdm="$cmd prom/graphite-exporter --graphite.mapping-config=/tmp/graphite_mapping
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: $volname"
+echo "  Container Volume name: $volname"
+echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
 
@@ -110,7 +114,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
 
     ( $cmd )
 else
-    echo "  <DRYRUN> - Command to run: "; echo ""
+    echo "  <DRYRUN> - Command to run: "
+    echo ""
     echo "$cmd"
     echo ""
  fi

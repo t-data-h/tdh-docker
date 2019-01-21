@@ -79,8 +79,11 @@ cmd="docker run --name $name -p $port:3306 -d"
 
 if [ -n "$network" ]; then 
     validate_network "$network"
-    cmd="$cmd --network $network"
+else
+    network="host"
 fi
+    
+cmd="$cmd --network $network"
 
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf \
 --mount type=volume,source=${volname},target=/var/lib/mysql \
@@ -94,6 +97,7 @@ mysql/mysql-server:5.7 \
 echo ""
 echo "  TDH Docker Container: '$name'"
 echo "  Container Volume Name: '$volname'"
+echo "  Network: $network"
 echo "  Local port: $port"
 echo "" 
 
@@ -109,7 +113,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     passwd=$( docker logs tdh-mysql1 2>&1 | grep GENERATED | awk -F': ' '{ print $2 }' )
     echo "passwd='$passwd'"
 else
-    echo "  <DRYRUN> - Command to exec would be: "; echo ""
+    echo "  <DRYRUN> - Command to exec would be: "
+    echo ""
     echo "( $cmd )"
     echo ""
 fi
