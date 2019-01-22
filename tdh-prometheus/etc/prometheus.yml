@@ -2,25 +2,25 @@
 scrape_configs:
 
   - job_name: 'prometheus'
-    #metrics_path: /ws/v1/cluster/metrics
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
     - targets: ['callisto:9091']
 
+    #metrics_path: /ws/v1/cluster/metrics
   - job_name: 'yarn-tdh'
     static_configs:
     - targets: ['callisto:9113']
 
-  #- job_name: 'yarnapps-tdh'
-    #static_configs:
-    #- targets: ['tdh-yarnapps-exporter1:9114']
+  - job_name: 'yarnapps-tdh'
+    static_configs:
+    - targets: ['callisto:9114']
 
-  #- job_name: 'mysql-callisto'
-    #scrape_interval: 300s
-    #static_configs:
-    #- targets: ['tdh-mysql-exporter1:9104']
+  - job_name: 'mysql-callisto'
+    scrape_interval: 300s
+    static_configs:
+    - targets: ['callisto:9104']
 
-  #- job_name: 'spark-tdh'
-    #static_configs:
-    #- targets: ['tdh-spark-exporter1:9108']
+  - job_name: 'spark-tdh'
+    static_configs:
+    - targets: ['callisto:9108']
