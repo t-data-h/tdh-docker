@@ -5,7 +5,7 @@ PNAME=${0##*\/}
 name="tdh-yarnapps-exporter1"
 port="9114"
 rmhost="localhost"
-rmport="8050"
+rmport="8088"
 path="ws/v1/cluster/apps?state=running"
 network=
 res=
@@ -40,7 +40,7 @@ validate_network()
         echo "Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo "Attaching container to bridge network '$net'"
     fi
 
     return 0
@@ -102,13 +102,13 @@ cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9114 \
 --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
 --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
 --env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
---env YARN_PROMETHEUS_ENDPOINT_PATH=\"$path\" \
+--env YARN_PROMETHEUS_ENDPOINT_PATH=$path \
 pbweb/yarn-prometheus-exporter"
 
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  YARN Endpoint: http://${rmhost}:${rmport}"
+echo "  YARN Endpoint: http://${rmhost}:${rmport}/${path}"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""

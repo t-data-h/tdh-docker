@@ -119,7 +119,7 @@ be in same path *graphite.properties*
 * Enable Prometheus for all instances by class name
 ```
 *.sink.graphite.class=org.apache.spark.metrics.sink.GraphiteSink
-*.sink.graphite.host=cloud-bdidev1
+*.sink.graphite.host=tdh-spark-exporter1
 *.sink.graphite.port=9109
 *.sink.prometheus.period=10
 *.sink.prometheus.unit=SECONDS
