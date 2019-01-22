@@ -39,7 +39,7 @@ validate_network()
         echo "Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo "Attaching container to bridge network '$net'"
     fi
 
     return 0
@@ -89,15 +89,19 @@ fi
 
 volname="${name}-data"
 
-cmd="docker run --name $name -p ${port}:9090 -d"
+cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
-    cmd="$cmd --network ${network}"
+    cmd="$cmd -p ${port}:9090"
+else
+    network="host"
 fi
-
+    
+cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml"
 cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data prom/prometheus"
+
 
 echo ""
 echo "  TDH Docker Container: '$name'"
@@ -105,6 +109,7 @@ echo "  Container Volume Name: '$volname'"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
+
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 

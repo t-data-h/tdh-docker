@@ -86,10 +86,11 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-cmd="docker run --name $name -p ${port}:9113 -d"
+cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
+    cmd="$cmd -p ${port}:9113"
 else
     network="host"
 fi
@@ -104,12 +105,14 @@ cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
 --env YARN_PROMETHEUS_ENDPOINT_PATH=\"$path\" \
 pbweb/yarn-prometheus-exporter"
 
+
 echo ""
 echo "  TDH Docker Container: '$name'"
 echo "  YARN Endpoint: http://${rmhost}:${rmport}"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
+
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 

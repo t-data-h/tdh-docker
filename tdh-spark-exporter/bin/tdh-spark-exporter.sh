@@ -85,17 +85,16 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-cmd="docker run --name $name -p 9108:9108 -p 9109:9109 -p 9109:9109/udp -d"
+cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
+    cmd="$cmd -p 9108:9108 -p 9109:9109 -p 9109:9109/udp"
 else 
     network="host"
 fi
 
 cmd="$cmd --network ${network}"
-
-
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tmp/graphite_mapping.conf"
 cdm="$cmd prom/graphite-exporter --graphite.mapping-config=/tmp/graphite_mapping.conf" 
 
@@ -106,6 +105,7 @@ echo "  Container Volume name: $volname"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
+
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 

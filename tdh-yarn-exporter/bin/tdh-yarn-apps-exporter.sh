@@ -88,16 +88,16 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-cmd="docker run --name $name -p ${port}:9114 -d"
+cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
+    cmd="$cmd -p ${port}:9114"
 else
     network="host"
 fi
     
 cmd="$cmd --network ${network}"
-
 cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9114 \
 --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
 --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
@@ -112,6 +112,7 @@ echo "  YARN Endpoint: http://${rmhost}:${rmport}"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
+
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 

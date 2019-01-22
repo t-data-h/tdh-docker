@@ -42,7 +42,7 @@ validate_network()
         echo "Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo "Attaching container to bridge network '$net'"
     fi
 
     return 0
@@ -83,16 +83,16 @@ fi
 
 volname="${name}-data1"
 
-cmd="docker run --name $name -p $port:3000 -d"
+cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then 
     validate_network "$network"
+    cmd="$cmd -p ${port}:3000"
 else
     network="host"
 fi
 
 cmd="$cmd --network $network"
-
 cmd="$cmd --mount type=volume,source=${volname},target=/var/lib/grafana"
 cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
 cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" 

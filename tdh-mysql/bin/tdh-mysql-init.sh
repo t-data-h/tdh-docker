@@ -36,7 +36,7 @@ validate_network()
         echo "Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo "Attaching container to bridge network '$net'"
     fi
 
     return 0
@@ -75,16 +75,16 @@ fi
 
 volname="${name}-data1"
 
-cmd="docker run --name $name -p $port:3306 -d"
+cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then 
     validate_network "$network"
+    cmd="$cmd -p $port:3306"
 else
     network="host"
 fi
     
 cmd="$cmd --network $network"
-
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf \
 --mount type=volume,source=${volname},target=/var/lib/mysql \
 --env MYSQL_RANDOM_ROOT_PASSWORD=true \
@@ -94,12 +94,14 @@ mysql/mysql-server:5.7 \
 #  initialization scripts
 # --mount type=bind,src=/path-on-host-machine/scripts/,dst=/docker-entrypoint-initdb.d/ \
 
+
 echo ""
 echo "  TDH Docker Container: '$name'"
 echo "  Container Volume Name: '$volname'"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo "" 
+
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
