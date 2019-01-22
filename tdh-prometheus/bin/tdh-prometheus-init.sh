@@ -93,14 +93,16 @@ cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
-    cmd="$cmd -p ${port}:9090"
+    cmd="$cmd -p ${port}:9091"
 else
     network="host"
 fi
-    
+
+
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml"
 cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data prom/prometheus"
+cmd="$cmd --web.listen-address=:9091 --config.file=/etc/prometheus/prometheus.yml"
 
 
 echo ""

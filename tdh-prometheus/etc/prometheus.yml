@@ -6,11 +6,11 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-    - targets: ['tdh-prometheus1:9090']
+    - targets: ['callisto:9091']
 
   - job_name: 'yarn-tdh'
     static_configs:
-    - targets: ['tdh-yarn-exporter1:9113']
+    - targets: ['callisto:9113']
 
   #- job_name: 'yarnapps-tdh'
     #static_configs:

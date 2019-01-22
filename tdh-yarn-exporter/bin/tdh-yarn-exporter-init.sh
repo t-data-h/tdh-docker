@@ -102,13 +102,13 @@ cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
 --env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
 --env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
 --env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
---env YARN_PROMETHEUS_ENDPOINT_PATH=\"$path\" \
+--env YARN_PROMETHEUS_ENDPOINT_PATH=$path \
 pbweb/yarn-prometheus-exporter"
 
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  YARN Endpoint: http://${rmhost}:${rmport}"
+echo "  YARN Endpoint: http://${rmhost}:${rmport}/$path"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
