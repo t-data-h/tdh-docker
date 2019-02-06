@@ -19,7 +19,7 @@ usage()
     echo "   -h|--help             = Display usage and exit."
     echo "   -N|--network <name>   = Attach container to Docker network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -p|--port <port>      = Local bind port for the container."
+    echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
     echo "   -R|--rmhost <host>    = Hostname of the RM Master."
     echo "   -P|--rmport <port>    = Port number for the ResourceManager"
     echo ""
