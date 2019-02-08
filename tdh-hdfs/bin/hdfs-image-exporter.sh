@@ -80,6 +80,16 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
+if [ -z "$imagepath" ]; then
+    echo "Error. --imagepath is required"
+    exit 1
+fi
+
+if ! [ -d "$imagepath" ]; then
+    echo "Image path is not a directory '$imagepath'"
+    exit 1
+fi
+
 cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
