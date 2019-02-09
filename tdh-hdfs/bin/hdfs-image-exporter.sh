@@ -2,7 +2,7 @@ PNAME=${0##*\/}
 
 tdh_path=$(dirname "$(readlink -f "$0")")
 name="tdh-hdfs-exporter1"
-port="9011"
+port="9010"
 network=
 res=
 imagepath=
@@ -89,6 +89,7 @@ if ! [ -d "$imagepath" ]; then
     echo "Image path is not a directory '$imagepath'"
     exit 1
 fi
+
 
 cmd="docker run --name $name -d"
 
