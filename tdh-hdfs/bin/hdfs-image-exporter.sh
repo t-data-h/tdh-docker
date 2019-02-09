@@ -1,3 +1,7 @@
+#!/bin/bash
+#
+# hdfs-image-exporter.sh
+#
 PNAME=${0##*\/}
 
 tdh_path=$(dirname "$(readlink -f "$0")")

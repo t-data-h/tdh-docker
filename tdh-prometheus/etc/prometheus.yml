@@ -7,6 +7,12 @@ scrape_configs:
     static_configs:
     - targets: ['callisto:9091']
 
+  - job_name: 'hdfs-tdh'
+    scrape_interval: 180m # Depends on how often the name node writes a fsimage file.
+    scrape_timeout:  200s # Depends on size
+    static_configs:
+    - targets: ['callisto:9010']
+
     #metrics_path: /ws/v1/cluster/metrics
   - job_name: 'yarn-tdh'
     static_configs:
