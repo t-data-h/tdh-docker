@@ -1,5 +1,8 @@
 #!/bin/bash
 #
+# fsimage_fetch.sh - Acquires and converts the HDFS metadata image to csv
+#   for import to Prometheus or other reporting
+#
 PNAME=${0##*\/}
 
 namenode=
@@ -13,10 +16,11 @@ cmd=
 res=
 
 
+
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] <namenode>  <path>"
+    echo "Usage: $PNAME [options]  <namenode>  <path>"
     echo "   -h|--help              = Display usage and exit."
     echo "   -p|--port <port>       = Namenode RPC Port (default=50070)"
     echo "   -R|--no-remove         = Do not remove fetched fsimage once converted."
@@ -77,8 +81,8 @@ if [ -f $csv ]; then
     exit 1
 fi
 if [ -f $image ]; then
-    echo " => Target fsimage exists, removing first."
-    ( rm $image )
+    echo " => Target fsimage exists, remove it first."
+    exit 1
 fi
 
 mkdir -p "$target"
