@@ -120,7 +120,7 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
 
     ( $cmd )
 else
-    echo "  <DRYRUN> - Command to run: "
+    echo "  <DRYRUN> - Command to execute: "
     echo ""
     echo "$cmd"
     echo ""
