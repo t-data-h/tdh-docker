@@ -38,18 +38,18 @@ RUN set -ex; \
         rm -rf /var/lib/apt/lists/*
 
 #mysql-connector-java.noarch \
-#COPY jdk-8u181-linux-x64.tar.gz /root/bootstrap/
+#COPY jdk-8u201-linux-x64.tar.gz /root/bootstrap/
 #COPY jce_policy-8.zip /root/bootstrap/
 
 RUN set -ex; \
-        wget -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u192-b12/750e1c8617c5452694857ad95c3ee230/jdk-8u192-linux-x64.tar.gz; \
+        wget -c --header "Cookie: oraclelicense=accept-securebackup-cookie" https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-linux-x64.tar.gz; \
         mkdir -p /usr/java; \
-        tar -zxf jdk-8u181-linux-x64.tar.gz -C /usr/java; \
-        ln -s /usr/lib/jvm/jdk1.8.0_181 /usr/java/default; \
-        rm -f jdk-8u181-linux-x64.tar.gz; \
+        tar -zxf jdk-8u201-linux-x64.tar.gz -C /usr/java; \
+        ln -s /usr/lib/jvm/jdk1.8.0_201 /usr/java/default; \
+        rm -f jdk-8u201-linux-x64.tar.gz; \
         wget -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip; \
         unzip jce_policy-8.zip; \
-        cp UnlimitedJCEPolicyJDK8/*.jar /usr/java/jdk1.8.0_181/jre/lib/security/; \
+        cp UnlimitedJCEPolicyJDK8/*.jar /usr/java/jdk1.8.0_201/jre/lib/security/; \
         rm -rf UnlimitedJCEPolicyJDK8 jce_policy-8.zip
 
 RUN set -ex; \
