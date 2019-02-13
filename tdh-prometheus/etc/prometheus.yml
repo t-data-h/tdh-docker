@@ -26,7 +26,7 @@ scrape_configs:
     static_configs:
     - targets: ['callisto:9108']
 
-  - job_name: 'mysql-callisto'
+  - job_name: 'mysql-tdh'
     scrape_interval: 300s
     static_configs:
     - targets: ['callisto:9104']
