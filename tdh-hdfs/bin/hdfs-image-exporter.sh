@@ -17,11 +17,10 @@ usage()
     echo ""
     echo "Usage: $PNAME [options] run|start"
     echo "   -h|--help             = Display usage and exit."
+    echo "   -i|--imagepath <path> = Local path to fsimage directory."
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -i|--imagepath <path> = Local path to fsimage directory."
     echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
-    echo "   -v|--volume <name>    = Optional volume name. Defaults to \$name-data"
     echo ""
     echo "Any other action than 'run|start' results in a dry run."
     echo "The container will only start with the run or start action."
@@ -109,13 +108,11 @@ fi
 
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${imagepath},dst=/fsimage-location"
-cmd="$cmd --env \"JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m\""
 cmd="$cmd marcelmay/hadoop-hdfs-fsimage-exporter"
 
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: '$volname'"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
@@ -126,11 +123,11 @@ ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
 
-    ( $cmd )
+    ( $cmd -e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m" )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
-    echo "$cmd"
+    echo "$cmd -e \"JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m\" "
     echo ""
  fi
 
