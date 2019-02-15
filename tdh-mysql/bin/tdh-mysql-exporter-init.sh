@@ -5,7 +5,7 @@ PNAME=${0##*\/}
 name="tdh-mysql-exporter1"
 port="9104"
 myhost="localhost"
-myport="3037"
+myport="3306"
 myuser="exporter"
 mypass=
 network=
@@ -98,6 +98,11 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
+if [ -z "$mypass" ]; then
+    echo "Mysql password required"
+    exit 1
+fi
+
 cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
@@ -111,7 +116,7 @@ cmd="$cmd --network ${network}"
 
 
 cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' \
-  prom/mysqld-exporter"
+prom/mysqld-exporter"
 
 
 echo ""
