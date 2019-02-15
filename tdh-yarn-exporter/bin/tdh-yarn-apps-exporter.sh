@@ -2,11 +2,12 @@
 #
 PNAME=${0##*\/}
 
+tdh_path=$(dirname "$(readlink -f "$0")")
 name="tdh-yarnapps-exporter1"
 port="9114"
 rmhost="localhost"
 rmport="8088"
-path="ws/v1/cluster/apps?state=running"
+metricpath="ws/v1/cluster/apps?state=running"
 network=
 res=
 ACTION=
@@ -28,23 +29,6 @@ usage()
     echo ""
 }
 
-
-validate_network()
-{
-    local net="$1"
-    local res=
-
-    res=$( docker network ls | awk '{print $2 }' | grep "$net" )
-
-    if [ -z "$res" ]; then
-        echo "Creating bridge network: $net"
-        ( docker network create --driver bridge $net )
-    else
-        echo "Attaching container to bridge network '$net'"
-    fi
-
-    return 0
-}
 
 
 # MAIN
@@ -83,48 +67,8 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-
 if [ -z "$ACTION" ]; then 
     usage
-fi
-
-cmd="docker run --name $name -d"
-
-if [ -n "$network" ]; then
-    validate_network "$network"
-    cmd="$cmd -p ${port}:9114"
-else
-    network="host"
-fi
-    
-cmd="$cmd --network ${network}"
-cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9114 \
---env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
---env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
---env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
---env YARN_PROMETHEUS_ENDPOINT_PATH=$path \
-pbweb/yarn-prometheus-exporter"
-
-
-echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  YARN Endpoint: http://${rmhost}:${rmport}/${path}"
-echo "  Network: $network"
-echo "  Local port: $port"
-echo ""
-
-
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
-
-if [ "$ACTION" == "run" ] || [ "$ACTION" == "start"]; then
-    echo "Starting container $name"
-
-    ( $cmd )
-else
-    echo "  <DRYRUN> - Command to run: "
-    echo ""
-    echo " ( $cmd ) " 
-    echo ""
 fi
 
 res=$?
@@ -132,5 +76,7 @@ res=$?
 if [ $res -ne 0 ]; then
     echo "Error in run for $PNAME"
 fi
+
+( $tdh_path/tdh-yarn-exporter-init.sh -n $name -p $port -R $rmhost -P $rmport -m $metricpath $ACTION )
 
 exit $res

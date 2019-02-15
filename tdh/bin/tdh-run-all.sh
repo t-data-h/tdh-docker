@@ -11,8 +11,10 @@ if [ -n "$TDH_CONTAINERS" ]; then
 fi
 
 if [ -z "$ACTION" ]; then
+    echo ""
     echo "Usage: $PNAME <action>"
     echo "  action = docker command to run. eg start|stop|inspect"
+    echo ""
 fi
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])

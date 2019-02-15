@@ -6,7 +6,7 @@ name="tdh-yarn-exporter1"
 port="9113"
 rmhost="localhost"
 rmport="8088"
-path="ws/v1/cluster/metrics"
+metricpath="ws/v1/cluster/metrics"
 network=
 res=
 ACTION=
@@ -20,6 +20,8 @@ usage()
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "                           Default uses 'host' networking."
     echo "   -n|--name <name>      = Name of the Docker Container instance."
+    echo "   -m|--metrics <path>   = Yarn uri path to metrics api."
+    echo "                           Default is $metricpath"
     echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
     echo "   -R|--rmhost <host>    = Hostname of the RM Master."
     echo "   -P|--rmport <port>    = Port number for the ResourceManager"
@@ -60,6 +62,10 @@ while [ $# -gt 0 ]; do
             ;;
         -n|--name)
             name="$2"
+            shift
+            ;;
+        -m|--metrics)
+            metricpath="$2"
             shift
             ;;
         -p|--port)
