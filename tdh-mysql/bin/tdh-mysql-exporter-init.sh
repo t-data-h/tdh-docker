@@ -83,7 +83,7 @@ while [ $# -gt 0 ]; do
             ;;
         -w|--mysql-pass)
             mypass="$2"
-            shfit
+            shift
             ;;
         *)
             ACTION="$1"
