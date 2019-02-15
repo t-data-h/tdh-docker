@@ -2,11 +2,12 @@
 #
 PNAME=${0##*\/}
 
-name="tdh-yarn-exporter1"
-port="9113"
-rmhost="localhost"
-rmport="8088"
-path="ws/v1/cluster/metrics"
+name="tdh-mysql-exporter1"
+port="9104"
+myhost="localhost"
+myport="3037"
+myuser="exporter"
+mypass=
 network=
 res=
 ACTION=
@@ -16,13 +17,15 @@ usage()
 {
     echo ""
     echo "Usage: $PNAME [options] run|start"
-    echo "   -h|--help             = Display usage and exit."
-    echo "   -N|--network <name>   = Attach container to Docker bridge network"
-    echo "                           Default uses 'host' networking."
-    echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
-    echo "   -R|--rmhost <host>    = Hostname of the RM Master."
-    echo "   -P|--rmport <port>    = Port number for the ResourceManager"
+    echo "   -h|--help              = Display usage and exit."
+    echo "   -N|--network <name>    = Attach container to Docker bridge network"
+    echo "                            Default uses 'host' networking."
+    echo "   -n|--name <name>       = Name of the Docker Container instance."
+    echo "   -p|--port <port>       = Local bind port for the container (default=${port})."
+    echo "   -H|--mysql-host <host> = Hostname of the mysql server."
+    echo "   -P|--mysql-port <port> = Port number for the mysql server"
+    echo "   -u|--mysql-user <user> = Mysql user"
+    echo "   -w|--mysql-pass <pw>   = Mysql password"
     echo ""
     echo "Any other action than 'run|start' results in a dry run."
     echo "The container will only start with the run or start action"
@@ -66,13 +69,21 @@ while [ $# -gt 0 ]; do
             port="$2"
             shift
             ;;
-        -R|--rmhost)
-            rmhost="$2"
+        -H|--mysql-host)
+            myhost="$2"
             shift
             ;;
-        -P|--rmport)
-            rmport="$2"
+        -P|--mysql-port)
+            myport="$2"
             shift 
+            ;;
+        -u|--mysql-user)
+            myuser="$2"
+            shift
+            ;;
+        -w|--mysql-pass)
+            mypass="$2"
+            shfit
             ;;
         *)
             ACTION="$1"
@@ -99,17 +110,13 @@ fi
 cmd="$cmd --network ${network}"
 
 
-cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
---env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
---env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
---env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
---env YARN_PROMETHEUS_ENDPOINT_PATH=$path \
-pbweb/yarn-prometheus-exporter"
+cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' \
+  prom/mysqld-exporter"
 
 
 echo ""
 echo "  TDH Docker Container: '$name'"
-echo "  YARN Endpoint: http://${rmhost}:${rmport}/$path"
+echo "  MySQL Endpoint: ${myuser}@${myhost}:${myport}/$path"
 echo "  Network: $network"
 echo "  Local port: $port"
 echo ""
