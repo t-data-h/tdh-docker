@@ -3,8 +3,10 @@
 # Prometheus Server
 #
 PNAME=${0##*\/}
-
 tdh_path=$(dirname "$(readlink -f "$0")")
+
+docker_image="prom/prometheus:v2.7.1"
+
 name="tdh-prometheus1"
 port="9091"
 volname=
@@ -15,15 +17,26 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
     echo "   -v|--volume <name>    = Optional volume name. Defaults to \$name-data"
+    echo "   -V|--version          = Show version info and exit"
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action."
+    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo ""
+}
+
+
+version()
+{
+    echo ""
+    echo "$PNAME"
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
 
@@ -75,6 +88,10 @@ while [ $# -gt 0 ]; do
             rmport="$2"
             shift 
             ;;
+        -V|--version)
+            version
+            exit 0
+            ;;
         *)
             ACTION="$1"
             shift
@@ -87,7 +104,7 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-volname="${name}-data"
+volname="${name}-data1"
 
 cmd="docker run --name $name -d"
 
@@ -101,15 +118,16 @@ fi
 
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/prometheus.yml,dst=/etc/prometheus/prometheus.yml"
-cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data prom/prometheus"
+cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data ${docker_image}"
 cmd="$cmd --web.listen-address=:9091 --config.file=/etc/prometheus/prometheus.yml"
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: '$volname'"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
+echo "  Container Volume Name: '${volname}'"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo ""
 
 

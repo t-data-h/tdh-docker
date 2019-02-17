@@ -2,10 +2,13 @@
 #
 PNAME=${0##*\/}
 
+docker_image="pbweb/yarn-prometheus-exporter:latest"
+
 name="tdh-yarn-exporter1"
 port="9113"
 rmhost="localhost"
 rmport="8088"
+httpscheme="http"
 metricpath="ws/v1/cluster/metrics"
 network=
 res=
@@ -15,7 +18,7 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "                           Default uses 'host' networking."
@@ -25,9 +28,20 @@ usage()
     echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
     echo "   -R|--rmhost <host>    = Hostname of the RM Master."
     echo "   -P|--rmport <port>    = Port number for the ResourceManager"
+    echo "   -V|--version          = Show version info and exit"
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
+    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo ""
+}
+
+
+version()
+{
+    echo ""
+    echo "$PNAME"
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
 
@@ -80,6 +94,10 @@ while [ $# -gt 0 ]; do
             rmport="$2"
             shift 
             ;;
+        -V|--version)
+            version
+            exit 0
+            ;;
         *)
             ACTION="$1"
             shift
@@ -97,7 +115,7 @@ cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
-    cmd="$cmd -p ${port}:9113"
+    cmd="$cmd -p ${port}:${port}"
 else
     network="host"
 fi
@@ -105,19 +123,20 @@ fi
 cmd="$cmd --network ${network}"
 
 
-cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:9113 \
---env YARN_PROMETHEUS_ENDPOINT_SCHEME=http \
---env YARN_PROMETHEUS_ENDPOINT_HOST=$rmhost \
---env YARN_PROMETHEUS_ENDPOINT_PORT=$rmport \
---env YARN_PROMETHEUS_ENDPOINT_PATH=$path \
-pbweb/yarn-prometheus-exporter"
+cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:${port} \
+--env YARN_PROMETHEUS_ENDPOINT_SCHEME=${httpscheme} \
+--env YARN_PROMETHEUS_ENDPOINT_HOST=${rmhost} \
+--env YARN_PROMETHEUS_ENDPOINT_PORT=${rmport} \
+--env YARN_PROMETHEUS_ENDPOINT_PATH=${path} \
+${docker_image}"
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
 echo "  YARN Endpoint: http://${rmhost}:${rmport}/$path"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo ""
 
 
@@ -127,6 +146,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container $name"
 
     ( $cmd )
+elif [ "$ACTION" == "pull" ]; then
+    ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""

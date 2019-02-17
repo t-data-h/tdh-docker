@@ -6,6 +6,9 @@
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
+
+docker_image="prom/graphite-exporter:v0.4.2"
+
 name="tdh-spark-exporter1"
 port="9109"
 network=
@@ -17,14 +20,25 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -N|--network <name>   = Attach container to Docker bridge network."
     echo "                           Default is to use 'host' networking."
+    echo "   -V|--version          = Show version info and exit."
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
+    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo ""
+}
+
+
+version()
+{
+    echo ""
+    echo "$PNAME" 
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
 
@@ -61,6 +75,10 @@ while [ $# -gt 0 ]; do
             network="$2"
             shift
             ;;
+        -V|--version)
+            version
+            exit 0
+            ;;
         *)
             ACTION="$1"
             shift
@@ -84,13 +102,14 @@ fi
 
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tmp/graphite_mapping.conf"
-cmd="$cmd prom/graphite-exporter --graphite.mapping-config=/tmp/graphite_mapping.conf" 
+cmd="$cmd ${docker_image} --graphite.mapping-config=/tmp/graphite_mapping.conf" 
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo ""
 
 
@@ -100,6 +119,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd )
+elif [ "$ACTION" == "pull" ]; then
+    ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
