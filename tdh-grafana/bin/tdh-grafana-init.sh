@@ -21,15 +21,15 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start|pull"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help            = Display usage and exit."
     echo "   -N|--network <name>  = Attach container to Docker network"
     echo "   -n|--name <name>     = Name of the Docker Container instance."
     echo "   -p|--port <port>     = Local bind port for the container."
     echo "   -V|--version         = Show version info and exit"
     echo ""
-    echo "Any other action than 'run|start|pull' results in a dry run."
-    echo "The container will only start with the run or start action"
+    echo "Any other action than 'run' results in a dry run."
+    echo "The container will only start with the run action"
     echo "'pull' simply fetches the docker image:version from docker repo"
     echo ""
 }
@@ -37,8 +37,8 @@ usage()
 version()
 {
     echo ""
-    echo "$PNAME - Docker Image Version:"
-    echo "  ${docker_image}"
+    echo "$PNAME "
+    echo "  Docker Image Version:  ${docker_image}"
     echo ""
 }
 
@@ -107,7 +107,7 @@ else
     network="host"
 fi
 
-cmd="$cmd --network $network"
+cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=volume,source=${volname},target=/var/lib/grafana"
 cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
 cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" 
@@ -115,10 +115,11 @@ cmd="$cmd ${docker_image}"
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: '$volname'"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version:  ${docker_image}"
+echo "  Container Volume Name: '${volname}'"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo "" 
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])

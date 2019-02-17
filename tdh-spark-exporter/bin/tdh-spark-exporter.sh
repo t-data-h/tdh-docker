@@ -20,25 +20,28 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -N|--network <name>   = Attach container to Docker bridge network."
     echo "                           Default is to use 'host' networking."
     echo "   -V|--version          = Show version info and exit."
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
+    echo "'pull' simply fetches the docker image:version from docker repo"
     echo ""
 }
+
 
 version()
 {
     echo ""
-    echo "$PNAME - Docker Image Version:"
-    echo "  ${docker_image}"
+    echo "$PNAME" 
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
+
 
 validate_network()
 {
@@ -103,9 +106,10 @@ cmd="$cmd ${docker_image} --graphite.mapping-config=/tmp/graphite_mapping.conf"
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo ""
 
 

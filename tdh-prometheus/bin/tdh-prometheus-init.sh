@@ -17,7 +17,7 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
@@ -25,18 +25,21 @@ usage()
     echo "   -v|--volume <name>    = Optional volume name. Defaults to \$name-data"
     echo "   -V|--version          = Show version info and exit"
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action."
+    echo "'pull' simply fetches the docker image:version from docker repo"
     echo ""
 }
+
 
 version()
 {
     echo ""
-    echo "$PNAME - Docker Image Version:"
-    echo "  ${docker_image}"
+    echo "$PNAME"
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
+
 
 validate_network()
 {
@@ -101,7 +104,7 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-volname="${name}-data"
+volname="${name}-data1"
 
 cmd="docker run --name $name -d"
 
@@ -120,10 +123,11 @@ cmd="$cmd --web.listen-address=:9091 --config.file=/etc/prometheus/prometheus.ym
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: '$volname'"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
+echo "  Container Volume Name: '${volname}'"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo ""
 
 

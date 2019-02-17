@@ -29,13 +29,15 @@ usage()
     echo " The container will only start with the run or start action"
 }
 
+
 version()
 {
     echo ""
-    echo "$PNAME - Docker Image Version:"
-    echo "  ${docker_image}"
+    echo "$PNAME"
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
+
 
 validate_network()
 {
@@ -112,10 +114,11 @@ ${docker_image} \
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
-echo "  Container Volume Name: '$volname'"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
+echo "  Container Volume Name: '${volname}'"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo "" 
 
 

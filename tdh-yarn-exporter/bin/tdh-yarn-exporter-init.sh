@@ -18,7 +18,7 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "                           Default uses 'host' networking."
@@ -30,18 +30,21 @@ usage()
     echo "   -P|--rmport <port>    = Port number for the ResourceManager"
     echo "   -V|--version          = Show version info and exit"
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
+    echo "'pull' simply fetches the docker image:version from docker repo"
     echo ""
 }
+
 
 version()
 {
     echo ""
-    echo "$PNAME - Docker Image Version:"
-    echo "  ${docker_image}"
+    echo "$PNAME"
+    echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
+
 
 validate_network()
 {
@@ -129,10 +132,11 @@ ${docker_image}"
 
 
 echo ""
-echo "  TDH Docker Container: '$name'"
+echo "  TDH Docker Container: '${name}'"
+echo "  Docker Image Version: ${docker_image}"
 echo "  YARN Endpoint: http://${rmhost}:${rmport}/$path"
-echo "  Network: $network"
-echo "  Local port: $port"
+echo "  Network: ${network}"
+echo "  Local port: ${port}"
 echo ""
 
 
