@@ -4,7 +4,9 @@
 #
 PNAME=${0##*\/}
 
+docker_image="marcelmay/hadoop-hdfs-fsimage-exporter:1.2"
 tdh_path=$(dirname "$(readlink -f "$0")")
+
 name="tdh-hdfs-exporter1"
 port="9010"
 network=
@@ -16,11 +18,11 @@ usage()
 {
     echo ""
     echo "Usage: $PNAME [options] run|start"
-    echo "   -h|--help             = Display usage and exit."
-    echo "   -i|--imagepath <path> = Local path to fsimage directory."
-    echo "   -N|--network <name>   = Attach container to Docker bridge network"
-    echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
+    echo "   -h|--help               = Display usage and exit."
+    echo "   -i|--fsimagepath <path> = Local path to fsimage directory."
+    echo "   -N|--network <name>     = Attach container to Docker bridge network"
+    echo "   -n|--name <name>        = Name of the Docker Container instance."
+    echo "   -p|--port <port>        = Local bind port for the container (default=${port})."
     echo ""
     echo "Any other action than 'run|start' results in a dry run."
     echo "The container will only start with the run or start action."
@@ -55,7 +57,7 @@ while [ $# -gt 0 ]; do
             usage
             exit 0
             ;;
-        -i|--imagepath)
+        -i|--fsimagepath)
             imagepath="$2"
             shift
             ;;
@@ -83,13 +85,13 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-if [ -z "$imagepath" ]; then
-    echo "Error. --imagepath is required"
+if [ -z "$fsimagepath" ]; then
+    echo "Error. --fsimagepath is required"
     exit 1
 fi
 
-if ! [ -d "$imagepath" ]; then
-    echo "Image path is not a directory '$imagepath'"
+if ! [ -d "$fsimagepath" ]; then
+    echo "Image path is not a directory '$fsimagepath'"
     exit 1
 fi
 
@@ -107,8 +109,8 @@ fi
 #-e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m"
 
 cmd="$cmd --network ${network}"
-cmd="$cmd --mount type=bind,src=${imagepath},dst=/fsimage-location"
-cmd="$cmd marcelmay/hadoop-hdfs-fsimage-exporter"
+cmd="$cmd --mount type=bind,src=${fsimagepath},dst=/fsimage-location"
+cmd="$cmd ${docker_image}"
 
 
 echo ""

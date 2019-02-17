@@ -2,6 +2,8 @@
 #
 PNAME=${0##*\/}
 
+docker_image="prom/mysqld-exporter:v0.11.0"
+
 name="tdh-mysql-exporter1"
 port="9104"
 myhost="localhost"
@@ -26,12 +28,20 @@ usage()
     echo "   -P|--mysql-port <port> = Port number for the mysql server"
     echo "   -u|--mysql-user <user> = Mysql user"
     echo "   -w|--mysql-pass <pw>   = Mysql password"
+    echo "   -V|--version           = Show version info and exit"
     echo ""
     echo "Any other action than 'run|start' results in a dry run."
     echo "The container will only start with the run or start action"
     echo ""
 }
 
+version()
+{
+    echo ""
+    echo "$PNAME - Docker Image Version:"
+    echo "  ${docker_image}"
+    echo ""
+}
 
 validate_network()
 {
@@ -85,6 +95,10 @@ while [ $# -gt 0 ]; do
             mypass="$2"
             shift
             ;;
+        -V|--version)
+            version
+            exit 0
+            ;;
         *)
             ACTION="$1"
             shift
@@ -115,8 +129,7 @@ fi
 cmd="$cmd --network ${network}"
 
 
-cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' \
-prom/mysqld-exporter"
+cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' ${docker_image}"
 
 
 echo ""
@@ -133,6 +146,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container $name"
 
     ( $cmd )
+elif [ "$ACTION" == "pull" ]; then
+    ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""

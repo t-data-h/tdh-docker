@@ -6,6 +6,9 @@
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
+
+docker_image="grafana/grafana:5.4.3"
+
 name="tdh-grafana1"
 port="3000"
 network=
@@ -13,23 +16,31 @@ volname=
 res=
 ACTION=
 
-grafana_version="5.4.2"
 
 
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|start|pull"
     echo "   -h|--help            = Display usage and exit."
     echo "   -N|--network <name>  = Attach container to Docker network"
     echo "   -n|--name <name>     = Name of the Docker Container instance."
     echo "   -p|--port <port>     = Local bind port for the container."
+    echo "   -V|--version         = Show version info and exit"
     echo ""
-    echo "Any other action than 'run|start' results in a dry run."
+    echo "Any other action than 'run|start|pull' results in a dry run."
     echo "The container will only start with the run or start action"
+    echo "'pull' simply fetches the docker image:version from docker repo"
     echo ""
 }
 
+version()
+{
+    echo ""
+    echo "$PNAME - Docker Image Version:"
+    echo "  ${docker_image}"
+    echo ""
+}
 
 validate_network()
 {
@@ -69,6 +80,10 @@ while [ $# -gt 0 ]; do
             port="$2"
             shift
             ;;
+        -V|--version)
+            version
+            exit 0
+            ;;
         *)
             ACTION="$1"
             shift
@@ -96,7 +111,7 @@ cmd="$cmd --network $network"
 cmd="$cmd --mount type=volume,source=${volname},target=/var/lib/grafana"
 cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
 cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" 
-cmd="$cmd grafana/grafana:${grafana_version}"
+cmd="$cmd ${docker_image}"
 
 
 echo ""
@@ -112,7 +127,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd )
-
+elif [ "$ACTION" == "pull" ]; then
+    ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to run: "; echo ""
     echo "( $cmd )"
