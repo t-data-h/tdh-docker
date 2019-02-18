@@ -137,6 +137,8 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd )
+elif [ "$ACTION" == "pull" ]; then
+    ( docker pull $docker_image )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
