@@ -26,8 +26,8 @@ usage()
     echo "   -p|--port <port>       = Local bind port for the container (default=${port})."
     echo "   -H|--mysql-host <host> = Hostname of the mysql server."
     echo "   -P|--mysql-port <port> = Port number for the mysql server"
-    echo "   -u|--mysql-user <user> = Mysql user"
-    echo "   -w|--mysql-pass <pw>   = Mysql password"
+    echo "   -u|--mysql-user <user> = MySQL user (default = exporter)"
+    echo "   -w|--mysql-pass <pw>   = MySQL password"
     echo "   -V|--version           = Show version info and exit"
     echo ""
     echo "Any other action than 'run' results in a dry run."
@@ -115,8 +115,15 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
+ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
+
+if [ "$ACTION" == "pull" ]; then
+    ( docker pull ${docker_image} )
+    exit 0
+fi
+
 if [ -z "$mypass" ]; then
-    echo "Mysql password required"
+    echo "MySQL password required"
     exit 1
 fi
 
@@ -131,7 +138,6 @@ fi
 
 cmd="$cmd --network ${network}"
 
-
 cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' ${docker_image}"
 
 
@@ -144,14 +150,10 @@ echo "  Local port: ${port}"
 echo ""
 
 
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
-
 if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container $name"
 
     ( $cmd )
-elif [ "$ACTION" == "pull" ]; then
-    ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
