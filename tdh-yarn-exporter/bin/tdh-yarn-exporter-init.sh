@@ -32,7 +32,7 @@ usage()
     echo ""
     echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
-    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo "'pull' fetches the docker image:version from docker repo"
     echo ""
 }
 
@@ -92,7 +92,7 @@ while [ $# -gt 0 ]; do
             ;;
         -P|--rmport)
             rmport="$2"
-            shift 
+            shift
             ;;
         -V|--version)
             version
@@ -107,7 +107,7 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ -z "$ACTION" ]; then 
+if [ -z "$ACTION" ]; then
     usage
 fi
 
@@ -133,9 +133,9 @@ ${docker_image}"
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version: ${docker_image}"
+echo "  Docker Image: ${docker_image}"
 echo "  YARN Endpoint: http://${rmhost}:${rmport}/$path"
-echo "  Network: ${network}"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 
@@ -151,7 +151,7 @@ elif [ "$ACTION" == "pull" ]; then
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
-    echo " ( $cmd ) " 
+    echo " ( $cmd ) "
     echo ""
 fi
 

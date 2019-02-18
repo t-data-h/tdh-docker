@@ -32,7 +32,7 @@ usage()
     echo ""
     echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
-    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo "'pull' fetches the docker image:version from docker repo"
     echo ""
 }
 
@@ -88,7 +88,7 @@ while [ $# -gt 0 ]; do
             ;;
         -P|--mysql-port)
             myport="$2"
-            shift 
+            shift
             ;;
         -u|--mysql-user)
             myuser="$2"
@@ -111,7 +111,7 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ -z "$ACTION" ]; then 
+if [ -z "$ACTION" ]; then
     usage
 fi
 
@@ -137,9 +137,9 @@ cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' ${doc
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version: ${docker_image}"
+echo "  Docker Image: ${docker_image}"
 echo "  MySQL Endpoint: ${myuser}@${myhost}:${myport}/$path"
-echo "  Network: ${network}"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 
@@ -155,7 +155,7 @@ elif [ "$ACTION" == "pull" ]; then
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
-    echo " ( $cmd ) " 
+    echo " ( $cmd ) "
     echo ""
 fi
 

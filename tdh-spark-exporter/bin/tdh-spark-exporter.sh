@@ -29,7 +29,7 @@ usage()
     echo ""
     echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action"
-    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo "'pull' fetches the docker image:version from docker repo"
     echo ""
 }
 
@@ -37,7 +37,7 @@ usage()
 version()
 {
     echo ""
-    echo "$PNAME" 
+    echo "$PNAME"
     echo "  Docker Image Version: ${docker_image}"
     echo ""
 }
@@ -96,19 +96,19 @@ cmd="docker run --name $name -d"
 if [ -n "$network" ]; then
     validate_network "$network"
     cmd="$cmd -p 9108:9108 -p $port:9109 -p $port:9109/udp"
-else 
+else
     network="host"
 fi
 
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tmp/graphite_mapping.conf"
-cmd="$cmd ${docker_image} --graphite.mapping-config=/tmp/graphite_mapping.conf" 
+cmd="$cmd ${docker_image} --graphite.mapping-config=/tmp/graphite_mapping.conf"
 
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version: ${docker_image}"
-echo "  Network: ${network}"
+echo "  Docker Image: ${docker_image}"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 

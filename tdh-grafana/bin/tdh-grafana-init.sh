@@ -92,7 +92,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ -z "$ACTION" ]; then 
+if [ -z "$ACTION" ]; then
     usage
 fi
 
@@ -100,7 +100,7 @@ volname="${name}-data1"
 
 cmd="docker run --name $name -d"
 
-if [ -n "$network" ]; then 
+if [ -n "$network" ]; then
     validate_network "$network"
     cmd="$cmd -p ${port}:3000"
 else
@@ -110,17 +110,17 @@ fi
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=volume,source=${volname},target=/var/lib/grafana"
 cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
-cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" 
+cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
 cmd="$cmd ${docker_image}"
 
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version:  ${docker_image}"
-echo "  Container Volume Name: '${volname}'"
-echo "  Network: ${network}"
+echo "  Docker Image:  ${docker_image}"
+echo "  Container Volume: '${volname}'"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
-echo "" 
+echo ""
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 

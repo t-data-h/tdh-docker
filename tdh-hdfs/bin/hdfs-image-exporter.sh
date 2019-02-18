@@ -27,7 +27,7 @@ usage()
     echo ""
     echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run action."
-    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo "'pull' fetches the docker image:version from docker repo"
     echo ""
 }
 
@@ -59,7 +59,7 @@ validate_network()
 }
 
 
-# MAIN 
+# MAIN
 
 
 while [ $# -gt 0 ]; do
@@ -126,8 +126,8 @@ cmd="$cmd ${docker_image}"
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version:  ${docker_image}"
-echo "  Network: ${network}"
+echo "  Docker Image:  ${docker_image}"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 

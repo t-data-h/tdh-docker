@@ -19,14 +19,16 @@ ACTION=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options] run|start"
+    echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help             = Display usage and exit."
     echo "   -N|--network <name>   = Attach container to Docker network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container."
     echo "   -V|--version          = Show version info and exit"
-    echo " Any other action than 'run|start' results in a dry run."
+    echo " Any other action than 'run' results in a dry run."
     echo " The container will only start with the run or start action"
+    echo "'pull' fetches the docker image:version from docker repo"
+    echo ""
 }
 
 
@@ -87,7 +89,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ -z "$ACTION" ]; then 
+if [ -z "$ACTION" ]; then
     usage
 fi
 
@@ -95,13 +97,13 @@ volname="${name}-data1"
 
 cmd="docker run --name $name -d"
 
-if [ -n "$network" ]; then 
+if [ -n "$network" ]; then
     validate_network "$network"
     cmd="$cmd -p $port:3306"
 else
     network="host"
 fi
-    
+
 cmd="$cmd --network $network"
 cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf \
 --mount type=volume,source=${volname},target=/var/lib/mysql \
@@ -115,11 +117,11 @@ ${docker_image} \
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version: ${docker_image}"
-echo "  Container Volume Name: '${volname}'"
-echo "  Network: ${network}"
+echo "  Docker Image: ${docker_image}"
+echo "  Container Volume: '${volname}'"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
-echo "" 
+echo ""
 
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])

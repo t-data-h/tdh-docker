@@ -27,7 +27,7 @@ usage()
     echo ""
     echo "Any other action than 'run' results in a dry run."
     echo "The container will only start with the run or start action."
-    echo "'pull' simply fetches the docker image:version from docker repo"
+    echo "'pull' fetches the docker image:version from docker repo"
     echo ""
 }
 
@@ -59,7 +59,7 @@ validate_network()
 }
 
 
-# MAIN 
+# MAIN
 
 
 while [ $# -gt 0 ]; do
@@ -86,7 +86,7 @@ while [ $# -gt 0 ]; do
             ;;
         -P|--rmport)
             rmport="$2"
-            shift 
+            shift
             ;;
         -V|--version)
             version
@@ -124,9 +124,9 @@ cmd="$cmd --web.listen-address=:9091 --config.file=/etc/prometheus/prometheus.ym
 
 echo ""
 echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image Version: ${docker_image}"
-echo "  Container Volume Name: '${volname}'"
-echo "  Network: ${network}"
+echo "  Docker Image: ${docker_image}"
+echo "  Container Volume: '${volname}'"
+echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 
