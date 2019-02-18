@@ -96,6 +96,13 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
+ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
+
+if [ "$ACTION" == "pull" ]; then
+    ( docker pull $docker_image )
+    exit 0
+fi
+
 if [ -z "$fsimagepath" ]; then
     echo "Error. --fsimagepath is required"
     exit 1
@@ -117,8 +124,6 @@ else
 fi
 
 
-#-e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m"
-
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${fsimagepath},dst=/fsimage-location"
 cmd="$cmd ${docker_image}"
@@ -132,14 +137,10 @@ echo "  Local port: ${port}"
 echo ""
 
 
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
-
 if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd -e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m" )
-elif [ "$ACTION" == "pull" ]; then
-    ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
