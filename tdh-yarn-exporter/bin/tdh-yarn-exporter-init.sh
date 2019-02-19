@@ -30,9 +30,9 @@ usage()
     echo "   -P|--rmport <port>    = Port number for the ResourceManager"
     echo "   -V|--version          = Show version info and exit"
     echo ""
-    echo "Any other action than 'run' results in a dry run."
-    echo "The container will only start with the run or start action"
-    echo "'pull' fetches the docker image:version from docker repo"
+    echo "  Any other action than 'run' results in a dry run."
+    echo "  The container will only start with the run or start action"
+    echo "  The 'pull' command fetches the docker image:version"
     echo ""
 }
 

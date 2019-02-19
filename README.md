@@ -1,8 +1,7 @@
-TDH-Docker - Version 0.2.4
+TDH-Docker - Version 0.2.5
 ==========================
 
-
-  A collection of docker containers for supporting TDH activities. 
+  A collection of docker containers for supporting TDH activities.
 
 
 ## Hadoop Metrics
@@ -112,7 +111,7 @@ curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/apps?state=running"
 Collecting Spark metrics can be accomplished using a Graphite sink which is
 native to Spark builds.
 
-#### Graphite Properties 
+#### Graphite Properties
 Distribute the following conf file to driver and all executor nodes. All should
 be in same path *graphite.properties*
 
