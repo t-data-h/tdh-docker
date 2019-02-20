@@ -20,9 +20,9 @@ usage()
     echo ""
     echo "Usage: $PNAME [options] run|pull"
     echo "   -h|--help              = Display usage and exit."
+    echo "   -n|--name <name>       = Name of the Docker Container instance."
     echo "   -N|--network <name>    = Attach container to Docker bridge network"
     echo "                            Default uses 'host' networking."
-    echo "   -n|--name <name>       = Name of the Docker Container instance."
     echo "   -p|--port <port>       = Local bind port for the container (default=${port})."
     echo "   -H|--mysql-host <host> = Hostname of the mysql server."
     echo "   -P|--mysql-port <port> = Port number for the mysql server"
@@ -30,9 +30,9 @@ usage()
     echo "   -w|--mysql-pass <pw>   = MySQL password"
     echo "   -V|--version           = Show version info and exit"
     echo ""
-    echo "Any other action than 'run' results in a dry run."
-    echo "The container will only start with the run or start action"
-    echo "'pull' fetches the docker image:version from docker repo"
+    echo "  Any other action than 'run' results in a dry run."
+    echo "  The container will only start with the run or start action"
+    echo "  The 'pull' command fetches the docker image:version"
     echo ""
 }
 

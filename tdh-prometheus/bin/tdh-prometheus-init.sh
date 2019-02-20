@@ -22,12 +22,12 @@ usage()
     echo "   -N|--network <name>   = Attach container to Docker bridge network"
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
-    echo "   -v|--volume <name>    = Optional volume name. Defaults to \$name-data"
+    echo "   -v|--volume <name>    = Optional volume name. Defaults to $name-data1"
     echo "   -V|--version          = Show version info and exit"
     echo ""
-    echo "Any other action than 'run' results in a dry run."
-    echo "The container will only start with the run or start action."
-    echo "'pull' fetches the docker image:version from docker repo"
+    echo "  Any other action than 'run' results in a dry run."
+    echo "  The container will only start with the run or start action."
+    echo "  The 'pull' command fetches the docker image:version"
     echo ""
 }
 
