@@ -1,4 +1,4 @@
-TDH-Docker - Version 0.2.5
+TDH-Docker - Version 0.2.6
 ==========================
 
   A collection of docker containers for supporting TDH activities.
@@ -12,7 +12,8 @@ TDH-Docker - Version 0.2.5
 HDFS filesystem analysis can be performed through the extraction of fsimage files
 from the  NameNode server via rest API call. The fsimage file is
 run through an offline image viewer which can convert block info to csv format
-for import into RDBMS, I used MySQL.
+providing block level metrics such as number of small files.
+
 
 * FSImage Retrieval
 ```
