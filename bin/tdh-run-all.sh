@@ -1,5 +1,8 @@
 #!/bin/bash
 #
+#  tdh-run-all.sh  provides a wrapper to running docker start/stop commands
+#  across all tdh containers
+#
 PNAME=${0##*\/}
 ACTION="$1"
 rt=0
@@ -21,10 +24,10 @@ fi
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
-for container in $TDHLIST; do 
+for container in $TDHLIST; do
 
     ( docker $@ $container )
-    
+
     rt=$?
     if [ $rt -ne 0 ]; then
         echo "Error in docker start for $container"
