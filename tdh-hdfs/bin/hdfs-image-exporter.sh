@@ -8,7 +8,7 @@ tdh_path=$(dirname "$(readlink -f "$0")")
 docker_image="marcelmay/hadoop-hdfs-fsimage-exporter:1.2"
 
 name="tdh-hdfs-exporter1"
-port="9010"
+port="7772"
 network=
 res=
 imagepath=
@@ -119,7 +119,7 @@ cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
     validate_network "$network"
-    cmd="$cmd -p ${port}:9010"
+    cmd="$cmd -p ${port}:7772"
 else
     network="host"
 fi
