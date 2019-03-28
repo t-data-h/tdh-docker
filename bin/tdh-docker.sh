@@ -14,10 +14,10 @@ usage()
 while [ $# -gt 0 ]; do
     case "$1" in
         start)
-            ( $tdh_path/tdh-run-all.sh start )
+            ( $tdh_path/tdh-run.sh start )
             ;;
         stop)
-            ( $tdh_path/tdh-run-all.sh stop )
+            ( $tdh_path/tdh-run.sh stop )
             ;;
         list|status)
             ( docker container list --all --filter name="tdh" )
