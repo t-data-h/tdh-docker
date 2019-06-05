@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+#  Initialize a docker container for the Prometheus Mysql exporter
+#
 PNAME=${0##*\/}
 
 docker_image="prom/mysqld-exporter:v0.11.0"
@@ -137,7 +139,6 @@ else
 fi
 
 cmd="$cmd --network ${network}"
-
 cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' ${docker_image}"
 
 
