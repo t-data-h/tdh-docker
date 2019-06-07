@@ -3,7 +3,7 @@
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
-
+prefix="tdh"
 
 usage()
 {
@@ -20,7 +20,7 @@ while [ $# -gt 0 ]; do
             ( $tdh_path/tdh-run.sh stop )
             ;;
         list|status)
-            ( docker container list --all --filter name="tdh" )
+            ( docker container list --all --filter name="$prefix" )
             ;;
         *)
             usage
