@@ -1,4 +1,4 @@
-TDH-Docker - Version 0.2.7
+TDH-Docker - Version 0.2.8
 ==========================
 
   A collection of docker containers for supporting TDH activities.
