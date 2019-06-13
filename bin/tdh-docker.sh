@@ -17,6 +17,10 @@ fi
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --prefix)
+            prefix="$2"
+            shift
+            ;;
         start)
             ( $tdh_path/tdh-run.sh start )
             ;;
