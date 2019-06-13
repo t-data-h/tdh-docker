@@ -21,7 +21,7 @@ res=
 usage()
 {
     echo ""
-    echo "Usage: $PNAME [options]  <namenode>  <path>"
+    echo "Usage: $PNAME [options]  <nn-host>  <path>"
     echo "   -h|--help              = Display usage and exit."
     echo "   -p|--port <port>       = Namenode RPC Port (default=50070)"
     echo "   -F|--fetch-only        = Only fetch the fsimage, do not convert."

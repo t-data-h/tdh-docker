@@ -104,13 +104,13 @@ if [ "$ACTION" == "pull" ]; then
     exit 0
 fi
 
-if [ -z "$fsimagepath" ]; then
+if [ -z "$imagepath" ]; then
     echo "Error. --fsimagepath is required"
     exit 1
 fi
 
-if ! [ -d "$fsimagepath" ]; then
-    echo "Image path is not a directory '$fsimagepath'"
+if ! [ -d "$imagepath" ]; then
+    echo "Image path is not a directory '$imagepath'"
     exit 1
 fi
 
@@ -126,7 +126,7 @@ fi
 
 
 cmd="$cmd --network ${network}"
-cmd="$cmd --mount type=bind,src=${fsimagepath},dst=/fsimage-location"
+cmd="$cmd --mount type=bind,src=${imagepath},dst=/fsimage-location"
 cmd="$cmd ${docker_image}"
 
 
