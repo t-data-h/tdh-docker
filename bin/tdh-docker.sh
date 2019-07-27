@@ -4,10 +4,11 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 prefix="tdh"
+runscript="$tdh_path/tdh-docker-run.sh"
 
 usage()
 {
-    echo "Usage: tdh.sh [start|stop|status]"
+    echo "Usage: $PNAME [start|stop|status]"
 }
 
 if [ $# -eq 0 ]; then
@@ -22,10 +23,10 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         start)
-            ( $tdh_path/tdh-run.sh start )
+            ( $runscript start )
             ;;
         stop)
-            ( $tdh_path/tdh-run.sh stop )
+            ( $runscript stop )
             ;;
         list|status)
             ( docker container list --all --filter name="$prefix" )

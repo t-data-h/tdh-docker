@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-#  tdh-run-all.sh  provides a wrapper to running docker start/stop commands
-#  across all tdh containers
+#  tdh-docker-run.sh  provides a wrapper to running docker start/stop (or other) 
+#  commands across many tdh containers.
 #
 PNAME=${0##*\/}
 ACTION="$@"
