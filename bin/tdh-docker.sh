@@ -3,14 +3,18 @@
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
-prefix="tdh"
+
 runscript="$tdh_path/tdh-docker-run.sh"
-version="v0.2.9"
+prefix="tdh"
+version="v0.3.0"
+
+
 
 usage()
 {
-    echo "Usage: $PNAME [start|stop|status]"
+    echo "Usage: $PNAME {--prefix <pfx>} [start|stop|status]"
 }
+
 
 version()
 {
