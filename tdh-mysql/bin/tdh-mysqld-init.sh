@@ -132,10 +132,9 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd )
-
-    # allow mysqld to start and generate password
-    sleep 3
+    ( sleep 5 )  # allow mysqld to start and generate password
     passwd=$( docker logs tdh-mysql1 2>&1 | grep GENERATED | awk -F': ' '{ print $2 }' )
+    
     echo "passwd='$passwd'"
 elif [ "$ACTION" == "pull" ]; then
     ( docker pull ${docker_image} )
