@@ -1,7 +1,7 @@
-TDH-Docker - Version 0.3.0
+TDH-Docker - Version 0.3.1
 ==========================
 
-  A collection of docker containers for supporting TDH activities.
+  A collection of docker containers for supporting Hadoop monitoring.
 
 
 ## Hadoop Metrics
@@ -12,7 +12,8 @@ TDH-Docker - Version 0.3.0
 HDFS filesystem analysis can be performed through the extraction of fsimage files
 from the  NameNode server via rest API call. The fsimage file is
 run through an offline image viewer which can convert block info to csv format
-providing block level metrics such as number of small files.
+providing block level metrics such as number of small files. When fsimages get
+large, it likely makes sense to run the conversion directly on a namenode.
 
 
 * FSImage Retrieval
@@ -67,7 +68,7 @@ curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/metrics"
 	scrapeFailures     
 ```
 
-* For Running Applications
+* For Applications:
 ```
  docker run -e YARN_PROMETHEUS_ENDPOINT_HOST=hostname \
   -e YARN_PROMETHEUS_LISTEN_ADDR=:9120  -p 9120:9120 t3/yarnapp

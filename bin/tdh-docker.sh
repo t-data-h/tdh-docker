@@ -1,12 +1,12 @@
 #!/bin/bash
-#  TDH Docker Container entry point for starting/stopping containers
+#  TDH Docker Container entry point for starting/stopping a group of containers
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
 runscript="$tdh_path/tdh-docker-run.sh"
 prefix="tdh"
-version="v0.3.0"
+version="v0.3.1"
 
 
 

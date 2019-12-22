@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  tdh-docker-run.sh  provides a wrapper to running docker start/stop (or other) 
+#  tdh-docker-run.sh  provides a wrapper to running docker start/stop (or other)
 #  commands across many tdh containers.
 #
 PNAME=${0##*\/}
@@ -16,7 +16,7 @@ fi
 if [ -z "$ACTION" ]; then
     echo ""
     echo "Usage: $PNAME <actions>"
-    echo "  Runs the provided action on all tdh containers as defined by \$TDHLIST"
+    echo "  Runs the provided action on all tdh containers as defined by \$TDH_CONTAINERS"
     echo "  action = docker command to run. eg start|stop|restart|inspect"
     echo ""
     exit 1

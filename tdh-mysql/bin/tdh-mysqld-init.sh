@@ -2,7 +2,7 @@
 #
 #  tdh-mysql-init.sh
 #
-#   Initialize MySQL Daemon via Docker
+#   Initialize MySQL Daemon Container via Docker
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
@@ -113,6 +113,7 @@ cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/tdh-mysql.cnf,dst=/etc/my.cnf
 --env MYSQL_LOG_CONSOLE=true \
 ${docker_image} \
 --character-set-server=utf8 --collation-server=utf8_general_ci"
+
 #  initialization scripts
 # --mount type=bind,src=/path-on-host-machine/scripts/,dst=/docker-entrypoint-initdb.d/ \
 
@@ -134,7 +135,7 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     ( $cmd )
     ( sleep 5 )  # allow mysqld to start and generate password
     passwd=$( docker logs tdh-mysql1 2>&1 | grep GENERATED | awk -F': ' '{ print $2 }' )
-    
+
     echo "passwd='$passwd'"
 elif [ "$ACTION" == "pull" ]; then
     ( docker pull ${docker_image} )
