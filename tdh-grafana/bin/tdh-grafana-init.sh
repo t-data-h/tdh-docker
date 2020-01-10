@@ -122,13 +122,12 @@ echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
-if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
+if [[ ${ACTION,,} =~ ^run$ || ${ACTION,,} =~ ^start$ ]]; then
     echo "Starting container '$name'"
 
     ( $cmd )
-elif [ "$ACTION" == "pull" ]; then
+elif [[ ${ACTION,,} =~ ^pull$ ]; then
     ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to run: "; echo ""

@@ -2,7 +2,7 @@
 #
 #  tdh-mysql-init.sh
 #
-#   Initialize MySQL Daemon Container via Docker
+#   Initialize MySQL Daemon via Docker Container
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
@@ -126,10 +126,7 @@ echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 
-
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
-
-if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
+if [[ ${ACTION,,} =~ ^run$ || ${ACTION,,} =~ ^start$ ]]; then
     echo "Starting container '$name'"
 
     ( $cmd )
@@ -137,7 +134,7 @@ if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
     passwd=$( docker logs tdh-mysql1 2>&1 | grep GENERATED | awk -F': ' '{ print $2 }' )
 
     echo "passwd='$passwd'"
-elif [ "$ACTION" == "pull" ]; then
+elif [[ ${ACTION,,} =~ ^pull$ ]]; then
     ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to exec would be: "

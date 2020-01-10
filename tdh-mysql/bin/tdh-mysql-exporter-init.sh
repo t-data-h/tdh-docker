@@ -117,9 +117,7 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
-
-if [ "$ACTION" == "pull" ]; then
+if [[ ${ACTION,,} =~ ^pull$ ]]; then
     ( docker pull ${docker_image} )
     exit 0
 fi
@@ -151,7 +149,7 @@ echo "  Local port: ${port}"
 echo ""
 
 
-if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
+if [[ ${ACTION,,} =~ ^run$ || ${ACTION,,} =~ ^start$ ]]; then
     echo "Starting container $name"
 
     ( $cmd )
