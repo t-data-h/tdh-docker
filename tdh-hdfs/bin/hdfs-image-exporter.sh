@@ -86,7 +86,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         *)
-            ACTION="$1"
+            ACTION="${1,,}"
             shift
             ;;
     esac

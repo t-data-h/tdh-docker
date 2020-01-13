@@ -105,7 +105,7 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
         *)
-            ACTION="$1"
+            ACTION="${1,,}"
             shift
             ;;
     esac
@@ -117,7 +117,7 @@ if [ -z "$ACTION" ]; then
     usage
 fi
 
-if [[ ${ACTION,,} =~ ^pull$ ]]; then
+if [ $ACTION == "pull" ]; then
     ( docker pull ${docker_image} )
     exit 0
 fi
@@ -149,7 +149,7 @@ echo "  Local port: ${port}"
 echo ""
 
 
-if [[ ${ACTION,,} =~ ^run$ || ${ACTION,,} =~ ^start$ ]]; then
+if [ $ACTION == "run" || $ACTION == "start" ]; then
     echo "Starting container $name"
 
     ( $cmd )

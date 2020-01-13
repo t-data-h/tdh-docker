@@ -57,10 +57,10 @@ while [ $# -gt 0 ]; do
             ;;
         -P|--rmport)
             rmport="$2"
-            shift 
+            shift
             ;;
         *)
-            ACTION="$1"
+            ACTION="${1,,}"
             shift
             ;;
     esac

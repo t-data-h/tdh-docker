@@ -84,7 +84,7 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
         *)
-            ACTION="$1"
+            ACTION="${1,,}"
             shift
             ;;
     esac
@@ -117,7 +117,6 @@ ${docker_image} \
 #  initialization scripts
 # --mount type=bind,src=/path-on-host-machine/scripts/,dst=/docker-entrypoint-initdb.d/ \
 
-
 echo ""
 echo "  TDH Docker Container: '${name}'"
 echo "  Docker Image: ${docker_image}"
@@ -126,7 +125,7 @@ echo "  Docker Network: ${network}"
 echo "  Local port: ${port}"
 echo ""
 
-if [[ ${ACTION,,} =~ ^run$ || ${ACTION,,} =~ ^start$ ]]; then
+if [ $ACTION == "run" || $ACTION == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd )
@@ -134,7 +133,7 @@ if [[ ${ACTION,,} =~ ^run$ || ${ACTION,,} =~ ^start$ ]]; then
     passwd=$( docker logs tdh-mysql1 2>&1 | grep GENERATED | awk -F': ' '{ print $2 }' )
 
     echo "passwd='$passwd'"
-elif [[ ${ACTION,,} =~ ^pull$ ]]; then
+elif [ $ACTION == "pull" ]; then
     ( docker pull ${docker_image} )
 else
     echo "  <DRYRUN> - Command to exec would be: "
