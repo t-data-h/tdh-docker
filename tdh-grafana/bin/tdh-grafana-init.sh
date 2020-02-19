@@ -123,7 +123,7 @@ echo "  Local port: ${port}"
 echo ""
 
 
-if [ $ACTION == "run" || $ACTION == "start" ]; then
+if [ $ACTION == "run" ] || [] $ACTION == "start" ]; then
     echo "Starting container '$name'"
 
     ( $cmd )
