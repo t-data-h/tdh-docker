@@ -7,7 +7,7 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
-docker_image="grafana/grafana:5.4.3"
+docker_image="grafana/grafana:6.7.2"
 
 name="tdh-grafana1"
 port="3000"

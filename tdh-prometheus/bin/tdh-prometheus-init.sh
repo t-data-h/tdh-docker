@@ -5,7 +5,7 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
-docker_image="prom/prometheus:v2.7.1"
+docker_image="prom/prometheus:v2.17.1"
 
 name="tdh-prometheus1"
 port="9091"

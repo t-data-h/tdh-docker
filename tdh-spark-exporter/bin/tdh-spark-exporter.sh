@@ -7,7 +7,7 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
-docker_image="prom/graphite-exporter:v0.4.2"
+docker_image="prom/graphite-exporter:v0.7.0"
 
 name="tdh-spark-exporter1"
 port="9109"

@@ -5,7 +5,7 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
-docker_image="marcelmay/hadoop-hdfs-fsimage-exporter:1.2"
+docker_image="marcelmay/hadoop-hdfs-fsimage-exporter:1.3"
 
 name="tdh-hdfs-exporter1"
 port="7772"
