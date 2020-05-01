@@ -24,7 +24,7 @@ usage()
     echo "   -N|--network <name>     = Attach container to Docker bridge network"
     echo "                             Default uses 'host' networking."
     echo "   -p|--port <port>        = Local bind port for the container (default=${port})."
-    echo "   -V|--version            = Show version info and exit"
+    echo "   -V|--version            = Show version info and exit."
     echo ""
     echo "  Any other action than 'run' results in a dry run."
     echo "  The container will only start with the run action."

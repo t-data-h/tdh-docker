@@ -18,11 +18,11 @@ usage()
     echo ""
     echo "Usage: $PNAME [options] run|start"
     echo "   -h|--help             = Display usage and exit."
-    echo "   -N|--network <name>   = Attach container to Docker network"
+    echo "   -N|--network <name>   = Attach container to Docker network."
     echo "   -n|--name <name>      = Name of the Docker Container instance."
     echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
     echo "   -R|--rmhost <host>    = Hostname of the RM Master."
-    echo "   -P|--rmport <port>    = Port number for the ResourceManager"
+    echo "   -P|--rmport <port>    = Port number for the ResourceManager."
     echo ""
     echo "Any other action than 'run|start' results in a dry run."
     echo "The container will only start with the run or start action"
@@ -67,7 +67,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ -z "$ACTION" ]; then 
+if [ -z "$ACTION" ]; then
     usage
 fi
 

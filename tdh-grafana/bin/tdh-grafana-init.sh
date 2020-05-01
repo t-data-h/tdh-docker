@@ -20,27 +20,28 @@ ACTION=
 
 usage()
 {
-    echo ""
-    echo "Usage: $PNAME [options] run|pull"
-    echo "   -h|--help            = Display usage and exit."
-    echo "   -N|--network <name>  = Attach container to Docker network"
-    echo "   -n|--name <name>     = Name of the Docker Container instance."
-    echo "   -p|--port <port>     = Local bind port for the container."
-    echo "   -V|--version         = Show version info and exit"
-    echo ""
-    echo "  Any other action than 'run' results in a dry run."
-    echo "  The container will only start with the run action"
-    echo "  The 'pull' command fetches the docker image:version"
-    echo ""
+    printf "\n"
+    printf "Usage: $PNAME [options] run|pull\n"
+    printf "   -h|--help            = Display usage and exit.\n"
+    printf "   -N|--network <name>  = Attach container to Docker network.\n"
+    printf "   -n|--name <name>     = Name of the Docker Container instance.\n"
+    printf "   -p|--port <port>     = Local bind port for the container.\n"
+    printf "   -V|--version         = Show version info and exit.\n"
+    printf "\n"
+    printf "  Any other action than 'run' results in a dry run.\n"
+    printf "  The container will only start with the run action.\n"
+    printf "  The 'pull' command fetches the docker image:version.\n"
+    printf "\n"
 }
 
 version()
 {
-    echo ""
-    echo "$PNAME "
-    echo "  Docker Image Version:  ${docker_image}"
-    echo ""
+    printf "\n"
+    printf "$PNAME \n"
+    printf "  Docker Image Version:  ${docker_image}\n"
+    printf "\n"
 }
+
 
 validate_network()
 {

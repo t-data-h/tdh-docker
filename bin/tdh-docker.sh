@@ -46,6 +46,11 @@ while [ $# -gt 0 ]; do
         -V|--version)
             version
             exit 0
+            ;;
+        -h|--help)
+            usage 
+            exit 0
+            ;;
         *)
             usage
             ;;

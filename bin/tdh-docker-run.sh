@@ -13,19 +13,34 @@ if [ -n "$TDH_CONTAINERS" ]; then
     TDHLIST="$TDH_CONTAINERS"
 fi
 
+usage()
+{
+    printf "\n"
+    printf "Usage: $PNAME <actions> \n"
+    printf "\n"
+    printf "  Runs the provided action on all tdh containers as defined by \$TDH_CONTAINERS \n"
+    printf "  where action is the docker command to run. eg start|stop|restart|inspect \n"
+    printf "\n"
+}
+
 if [ -z "$ACTION" ]; then
-    echo ""
-    echo "Usage: $PNAME <actions>"
-    echo "  Runs the provided action on all tdh containers as defined by \$TDH_CONTAINERS"
-    echo "  action = docker command to run. eg start|stop|restart|inspect"
-    echo ""
+    usage
     exit 1
 fi
 
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
-for container in $TDHLIST; do
+case "$ACTION" in
+-h|--help)
+    usage
+    exit 0
+    ;;
+*)
+    ;;
+esac
 
+
+for container in $TDHLIST; do
     ( docker $ACTION $container )
 
     rt=$?
