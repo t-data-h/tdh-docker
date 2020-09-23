@@ -6,7 +6,7 @@ tdh_path=$(dirname "$(readlink -f "$0")")
 
 runscript="$tdh_path/tdh-docker-run.sh"
 prefix="tdh"
-version="v0.3.1"
+version="v20.09"
 
 
 

@@ -1,4 +1,4 @@
-TDH-Docker - Version 0.3.1
+TDH-Docker - Version 20.09
 ==========================
 
   A collection of docker containers for supporting Hadoop monitoring.
