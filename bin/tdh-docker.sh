@@ -40,14 +40,14 @@ while [ $# -gt 0 ]; do
         stop)
             ( $runscript stop )
             ;;
-        list|status)
+        list|--list|status)
             ( docker container list --all --filter name="$prefix" )
             ;;
-        -V|--version)
+        'version'|-V|--version)
             version
             exit 0
             ;;
-        -h|--help)
+        'help'|-h|--help)
             usage 
             exit 0
             ;;

@@ -31,7 +31,7 @@ fi
 ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
 case "$ACTION" in
--h|--help)
+'help'|-h|--help)
     usage
     exit 0
     ;;
