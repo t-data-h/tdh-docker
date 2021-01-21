@@ -14,7 +14,7 @@ if [ -n "$TDH_CONTAINERS" ]; then
 fi
 
 usage="
- Provides a wrapper to running the provided docker 'action' across containers.
+Provides a wrapper to running the provided docker 'action' across containers.
 as defined by the environment variable \$TDH_CONTAINERS
 
 Synopsis:

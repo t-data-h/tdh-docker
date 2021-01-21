@@ -14,32 +14,28 @@ res=
 imagepath=
 ACTION=
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options] run|pull"
-    echo "   -h|--help               = Display usage and exit."
-    echo "   -i|--fsimagepath <path> = Local path to fsimage directory."
-    echo "   -n|--name <name>        = Name of the Docker Container instance."
-    echo "   -N|--network <name>     = Attach container to Docker bridge network"
-    echo "                             Default uses 'host' networking."
-    echo "   -p|--port <port>        = Local bind port for the container (default=${port})."
-    echo "   -V|--version            = Show version info and exit."
-    echo ""
-    echo "  Any other action than 'run' results in a dry run."
-    echo "  The container will only start with the run action."
-    echo "  The 'pull' command fetches the docker image:version"
-    echo ""
-}
+usage="
+Initializes a Docker container for the Prometheus HDFS Image Exporter.
 
+Synopsis:
+  $PNAME [options] run|pull
 
-version()
-{
-    echo ""
-    echo "$PNAME "
-    echo "  Docker Image Version:  ${docker_image}"
-    echo ""
-}
+Options:
+  -h|--help               = Display usage and exit.
+  -i|--fsimagepath <path> = Local path to fsimage directory.
+  -n|--name <name>        = Name of the Docker Container instance.
+  -N|--network <name>     = Attach container to Docker bridge network
+                            Default uses 'host' networking.
+  -p|--port <port>        = Local bind port for the container (default=${port}).
+  -V|--version            = Show version info and exit.
+
+Any other action than 'run' results in a dry run.
+The container will only start with the run action.
+The 'pull' command fetches the docker image:version
+"
+
+version="$PNAME : Docker Image Version:  ${docker_image}"
+
 
 
 validate_network()
@@ -65,8 +61,8 @@ validate_network()
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        -h|--help)
-            usage
+        'help'|-h|--help)
+            echo "$usage"
             exit 0
             ;;
         -i|--fsimagepath)
@@ -85,6 +81,9 @@ while [ $# -gt 0 ]; do
             port="$2"
             shift
             ;;
+        'version'|-V|--version)
+            echo "$version"
+            exit 0
         *)
             ACTION="${1,,}"
             shift
@@ -94,10 +93,9 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
+    exit 1
 fi
-
-ACTION=$(echo $ACTION | tr [:upper:] [:lower:])
 
 if [ "$ACTION" == "pull" ]; then
     ( docker pull $docker_image )
@@ -130,17 +128,15 @@ cmd="$cmd --mount type=bind,src=${imagepath},dst=/fsimage-location"
 cmd="$cmd ${docker_image}"
 
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image:  ${docker_image}"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image:  ${docker_image}
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
-
-if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
+if [[ "$ACTION" == "run" || "$ACTION" == "start" ]]; then
     echo "Starting container '$name'"
-
     ( $cmd -e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m" )
 else
     echo "  <DRYRUN> - Command to execute: "

@@ -16,27 +16,28 @@ truststore=
 cmd=
 res=
 
+usage="
+Acquires and converts the HDFS metadata image to CSV for 
+import to Prometheus (or other) for reporting on HDFS metrics.
+
+Synopsis:
+  $PNAME [options]  <nn-host>  <path>
+
+Options:
+  -h|--help              = Display usage and exit.
+  -p|--port <port>       = Namenode RPC Port (default=50070)
+  -F|--fetch-only        = Only fetch the fsimage, do not convert.
+  -R|--no-remove         = Do not remove fetched fsimage once converted.
+  -T|--truststore <path> = Path to pem truststore, enables and use https.
+"
 
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options]  <nn-host>  <path>"
-    echo "   -h|--help              = Display usage and exit."
-    echo "   -p|--port <port>       = Namenode RPC Port (default=50070)"
-    echo "   -F|--fetch-only        = Only fetch the fsimage, do not convert."
-    echo "   -R|--no-remove         = Do not remove fetched fsimage once converted."
-    echo "   -T|--truststore <path> = Path to pem truststore, enables and use https."
-    echo ""
-}
-
-
-## OPTIONS
+## MAIN
 
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -p|--port)
@@ -63,10 +64,10 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ -z "$namenode" ] || [ -z "$path" ]; then
-    echo " Error in usage." 
-    usage
-    exit 0
+if [[ -z "$namenode" || -z "$path" ]]; then
+    echo " Error, required parameters missing." 
+    echo "$usage"
+    exit 1
 fi
 
 if ! [ -d $path ]; then 

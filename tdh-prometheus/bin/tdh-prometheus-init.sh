@@ -117,18 +117,17 @@ cmd="$cmd --mount type=volume,source=${volname},target=/prometheus-data ${docker
 cmd="$cmd --web.listen-address=:9091 --config.file=/etc/prometheus/prometheus.yml"
 
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image: ${docker_image}"
-echo "  Container Volume: '${volname}'"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image: ${docker_image}
+  Container Volume: '${volname}'
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
 
-if [ $ACTION == "run" ] || [ $ACTION == "start" ]; then
+if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container '$name'"
-
     ( $cmd )
 elif [ $ACTION == "pull" ]; then
     ( docker pull $docker_image )

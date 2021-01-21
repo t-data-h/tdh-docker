@@ -14,31 +14,26 @@ network=
 res=
 ACTION=
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options] run|pull"
-    echo "   -h|--help             = Display usage and exit."
-    echo "   -b|--brokers          = List of Kafka Brokers 'broker1:9092,broker2:9092'."
-    echo "   -N|--network <name>   = Attach container to Docker bridge network."
-    echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
-    echo "   -V|--version          = Show version info and exit."
-    echo ""
-    echo "  Any other action than 'run' results in a dry run."
-    echo "  The container will only start with the run or start action."
-    echo "  The 'pull' command fetches the docker image:version."
-    echo ""
-}
+usage="
+Initializes a Prometheus Kafka Exporter as a Docker container.
 
+Synopsis:
+  $PNAME [options] run|pull
 
-version()
-{
-    echo ""
-    echo "$PNAME"
-    echo "  Docker Image Version: ${docker_image}"
-    echo ""
-}
+Options:
+  -h|--help             = Display usage and exit.
+  -b|--brokers          = List of Kafka Brokers 'broker1:9092,broker2:9092'.
+  -N|--network <name>   = Attach container to Docker bridge network.
+  -n|--name <name>      = Name of the Docker Container instance.
+  -p|--port <port>      = Local bind port for the container (default=${port}).
+  -V|--version          = Show version info and exit.
+
+Any other action than 'run' results in a dry run.
+The container will only start with the run or start action.
+The 'pull' command fetches the docker image:version.
+"
+
+version="$PNAME : Docker Image Version: ${docker_image}"
 
 
 validate_network()
@@ -65,7 +60,7 @@ validate_network()
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -n|--name)
@@ -85,7 +80,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -V|--version)
-            version
+            echo "$version"
             exit 0
             ;;
         *)
@@ -97,7 +92,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
+    exit 1
 fi
 
 if [ -z "$brokers" ]; then
@@ -124,18 +120,16 @@ for broker in $brokers; do
     cmd="$cmd --kafka.server=$broker"
 done
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image: ${docker_image}"
-echo "  Container Volume: '${volname}'"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image: ${docker_image}
+  Container Volume: '${volname}'
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
-
-if [ $ACTION == "run" ] || [ $ACTION == "start" ]; then
+if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container '$name'"
-
     ( $cmd )
 elif [ $ACTION == "pull" ]; then
     ( docker pull $docker_image )

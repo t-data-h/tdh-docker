@@ -8,22 +8,13 @@ runscript="$tdh_path/tdh-docker-run.sh"
 prefix="tdh"
 version="v20.09"
 
+usage="Usage: $PNAME {--prefix <pfx>} [start|stop|status]"
+version="$PNAME: $version"
 
-
-usage()
-{
-    echo "Usage: $PNAME {--prefix <pfx>} [start|stop|status]"
-}
-
-
-version()
-{
-    echo "$PNAME: $version"
-}
 
 
 if [ $# -eq 0 ]; then
-    usage
+    echo "$usage"
     exit 1
 fi
 
@@ -44,15 +35,15 @@ while [ $# -gt 0 ]; do
             ( docker container list --all --filter name="$prefix" )
             ;;
         'version'|-V|--version)
-            version
+            echo "$version"
             exit 0
             ;;
         'help'|-h|--help)
-            usage 
+            echo "$usage" 
             exit 0
             ;;
         *)
-            usage
+            echo "$usage"
             ;;
     esac
     shift

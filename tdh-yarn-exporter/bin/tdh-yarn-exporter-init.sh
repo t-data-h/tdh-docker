@@ -117,8 +117,6 @@ else
 fi
 
 cmd="$cmd --network ${network}"
-
-
 cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:${port} \
 --env YARN_PROMETHEUS_ENDPOINT_SCHEME=${httpscheme} \
 --env YARN_PROMETHEUS_ENDPOINT_HOST=${rmhost} \
@@ -126,19 +124,16 @@ cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:${port} \
 --env YARN_PROMETHEUS_ENDPOINT_PATH=${path} \
 ${docker_image}"
 
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image: ${docker_image}
+  YARN Endpoint: http://${rmhost}:${rmport}/$path
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image: ${docker_image}"
-echo "  YARN Endpoint: http://${rmhost}:${rmport}/$path"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
-
-
-if [ "$ACTION" == "run" ] || [ "$ACTION" == "start" ]; then
+if [[ "$ACTION" == "run" || "$ACTION" == "start" ]]; then
     echo "Starting container $name"
-
     ( $cmd )
 elif [ "$ACTION" == "pull" ]; then
     ( docker pull ${docker_image} )

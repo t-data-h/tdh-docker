@@ -18,29 +18,25 @@ ACTION=
 
 
 
-usage()
-{
-    printf "\n"
-    printf "Usage: $PNAME [options] run|pull\n"
-    printf "   -h|--help            = Display usage and exit.\n"
-    printf "   -N|--network <name>  = Attach container to Docker network.\n"
-    printf "   -n|--name <name>     = Name of the Docker Container instance.\n"
-    printf "   -p|--port <port>     = Local bind port for the container.\n"
-    printf "   -V|--version         = Show version info and exit.\n"
-    printf "\n"
-    printf "  Any other action than 'run' results in a dry run.\n"
-    printf "  The container will only start with the run action.\n"
-    printf "  The 'pull' command fetches the docker image:version.\n"
-    printf "\n"
-}
+usage="
+Initializes a Grafana Server as a Docker container.
 
-version()
-{
-    printf "\n"
-    printf "$PNAME \n"
-    printf "  Docker Image Version:  ${docker_image}\n"
-    printf "\n"
-}
+Synopsis:
+  $PNAME [options] run|pull
+
+Options:
+  -h|--help            = Display usage and exit.
+  -N|--network <name>  = Attach container to Docker network.
+  -n|--name <name>     = Name of the Docker Container instance.
+  -p|--port <port>     = Local bind port for the container.
+  -V|--version         = Show version info and exit.
+
+Any other action than 'run' results in a dry run.
+The container will only start with the run action.
+The 'pull' command fetches the docker image:version.
+"
+
+version="$PNAME : Docker Image Version:  ${docker_image}"
 
 
 validate_network()
@@ -66,7 +62,7 @@ validate_network()
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -N|--network)
@@ -82,7 +78,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -V|--version)
-            version
+            echo "$version"
             exit 0
             ;;
         *)
@@ -94,7 +90,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
+    exit 1
 fi
 
 volname="${name}-data1"
@@ -114,19 +111,16 @@ cmd="$cmd --env MYSQL_RANDOM_ROOT_PASSWORD=true"
 cmd="$cmd --env GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
 cmd="$cmd ${docker_image}"
 
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image:  ${docker_image}
+  Container Volume: '${volname}'
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image:  ${docker_image}"
-echo "  Container Volume: '${volname}'"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
-
-
-if [ $ACTION == "run" ] || [] $ACTION == "start" ]; then
+if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container '$name'"
-
     ( $cmd )
 elif [ $ACTION == "pull" ]; then
     ( docker pull ${docker_image} )

@@ -31,7 +31,7 @@ Options:
   -p|--port <port>       = Local bind port for the container (default=${port}).
   -H|--mysql-host <host> = Hostname of the mysql server.
   -P|--mysql-port <port> = Port number for the mysql server
-  -u|--mysql-user <user> = MySQL user (default = exporter)
+  -U|--mysql-user <user> = MySQL user (default = exporter)
   -w|--mysql-pass <pw>   = MySQL password
   -V|--version           = Show version info and exit.
 
@@ -86,7 +86,7 @@ while [ $# -gt 0 ]; do
             myport="$2"
             shift
             ;;
-        -u|--mysql-user)
+        -U|--mysql-user)
             myuser="$2"
             shift
             ;;
@@ -145,7 +145,6 @@ echo "
 
 if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container $name"
-
     ( $cmd )
 else
     echo "  <DRYRUN> - Command to execute: "

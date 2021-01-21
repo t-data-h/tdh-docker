@@ -17,30 +17,25 @@ ACTION=
 
 
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options] run|pull"
-    echo "   -h|--help             = Display usage and exit."
-    echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -N|--network <name>   = Attach container to Docker bridge network."
-    echo "                           Default is to use 'host' networking."
-    echo "   -V|--version          = Show version info and exit."
-    echo ""
-    echo "  Any other action than 'run' results in a dry run."
-    echo "  The container will only start with the run or start action."
-    echo "  The 'pull' command fetches the docker image:version"
-    echo ""
-}
+usage="
+Initializes a Prometheus Graphite Exporter for Spark as a Docker container.
 
+Synopsis:
+  $PNAME [options] run|pull
 
-version()
-{
-    echo ""
-    echo "$PNAME"
-    echo "  Docker Image Version: ${docker_image}"
-    echo ""
-}
+Options:
+  -h|--help             = Display usage and exit.
+  -n|--name <name>      = Name of the Docker Container instance.
+  -N|--network <name>   = Attach container to Docker bridge network.
+                          Default is to use 'host' networking.
+  -V|--version          = Show version info and exit.
+ 
+Any other action than 'run' results in a dry run.
+The container will only start with the run or start action.
+The 'pull' command fetches the docker image:version
+"
+
+version="$PNAME : Docker Image Version: ${docker_image}"
 
 
 validate_network()
@@ -64,7 +59,7 @@ validate_network()
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -n|--name)
@@ -76,7 +71,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -V|--version)
-            version
+            echo "$version"
             exit 0
             ;;
         *)
@@ -88,7 +83,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
+    exit 1
 fi
 
 cmd="docker run --name $name -d"
@@ -105,17 +101,15 @@ cmd="$cmd --mount type=bind,src=${tdh_path}/../etc/graphite_mapping.conf,dst=/tm
 cmd="$cmd ${docker_image} --graphite.mapping-config=/tmp/graphite_mapping.conf"
 
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image: ${docker_image}"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image: ${docker_image}
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
-
-if [ $ACTION == "run" || $ACTION == "start" ]; then
+if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container '$name'"
-
     ( $cmd )
 elif [ $ACTION == "pull" ]; then
     ( docker pull ${docker_image} )

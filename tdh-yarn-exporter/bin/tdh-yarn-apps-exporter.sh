@@ -67,6 +67,7 @@ done
 
 if [ -z "$ACTION" ]; then
     echo "$usage"
+    exit 0
 fi
 
 res=$?
