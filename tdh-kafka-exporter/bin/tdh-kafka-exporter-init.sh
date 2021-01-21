@@ -7,13 +7,16 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
-docker_image="danielqsj/kafka-exporter:latest"
+image="danielqsj/kafka-exporter"
+imagever="latest"
+docker_image="${image}:${imagever}"
 
 name="tdh-kafka-exporter1"
 port="9108"
 brokers=
 network=
 ACTION=
+
 
 # -----------------------------------
 
@@ -31,7 +34,7 @@ Options:
   -p|--port <port>      = Local bind port for the container (default=${port}).
   -V|--version          = Show version info and exit.
 
-Any other action than 'run' results in a dry run.
+Any action than 'run' results in a 'dry-run'.
 The container will only start with the run or start action.
 The 'pull' command fetches the docker image:version.
 "
@@ -48,10 +51,10 @@ validate_network()
     res=$( docker network ls | awk '{print $2 }' | grep "$net" )
 
     if [ -z "$res" ]; then
-        echo "Creating bridge network: $net"
+        echo " -> Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to bridge network '$net'"
+        echo " -> Attaching container to bridge network '$net'"
     fi
 
     return 0

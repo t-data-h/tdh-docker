@@ -2,7 +2,9 @@
 #
 PNAME=${0##*\/}
 
-docker_image="pbweb/yarn-prometheus-exporter:latest"
+image="pbweb/yarn-prometheus-exporter"
+imagever="latest"
+docker_image="${image}:${imagever}"
 
 name="tdh-yarn-exporter1"
 port="9113"
@@ -147,7 +149,7 @@ fi
 rt=$?
 
 if [ $rt -ne 0 ]; then
-    echo "$PNAME ERROR in command."
+    echo "$PNAME ERROR in docker command."
 fi
 
 exit $rt

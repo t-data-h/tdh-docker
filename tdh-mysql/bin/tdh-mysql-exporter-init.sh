@@ -4,7 +4,9 @@
 #
 PNAME=${0##*\/}
 
-docker_image="prom/mysqld-exporter:v0.11.0"
+image="prom/mysqld-exporter"
+imagever="v0.11.0"
+docker_image="${image}:${imagever}"
 
 name="tdh-mysql-exporter1"
 port="9104"

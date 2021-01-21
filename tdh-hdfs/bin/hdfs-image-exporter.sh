@@ -5,7 +5,9 @@
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
 
-docker_image="marcelmay/hadoop-hdfs-fsimage-exporter:1.3"
+image="marcelmay/hadoop-hdfs-fsimage-exporter"
+imagever="1.3"
+docker_image="${image}:${imagever}"
 
 name="tdh-hdfs-exporter1"
 port="7772"
@@ -137,7 +139,7 @@ echo "
 "
 
 if [[ "$ACTION" == "run" || "$ACTION" == "start" ]]; then
-    echo "Starting container '$name'"
+    echo " - > Starting container '$name'"
     ( $cmd -e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m" )
     rt=$?
 else
