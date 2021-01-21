@@ -15,7 +15,7 @@ network=
 res=
 ACTION=
 
-
+# -----------------------------------
 
 usage="
 Initializes a Prometheus Graphite Exporter for Spark as a Docker container.
@@ -24,19 +24,20 @@ Synopsis:
   $PNAME [options] run|pull
 
 Options:
-  -h|--help             = Display usage and exit.
-  -n|--name <name>      = Name of the Docker Container instance.
-  -N|--network <name>   = Attach container to Docker bridge network.
-                          Default is to use 'host' networking.
-  -V|--version          = Show version info and exit.
+  -h|--help            = Show usage and exit.
+  -n|--name <name>     = Name of the Docker Container instance.
+  -N|--network <name>  = Attach container to Docker bridge network.
+                         Default is to use 'host' networking.
+  -V|--version         = Show version info and exit.
  
-Any other action than 'run' results in a dry run.
+Any action other than 'run' results in a 'dry-run'.
 The container will only start with the run or start action.
 The 'pull' command fetches the docker image:version
 "
 
 version="$PNAME : Docker Image Version: ${docker_image}"
 
+# -----------------------------------
 
 validate_network()
 {
@@ -55,12 +56,15 @@ validate_network()
     return 0
 }
 
+# -----------------------------------
+# MAIN
+rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
             echo "$usage"
-            exit 0
+            exit $rt
             ;;
         -n|--name)
             name="$2"
@@ -72,7 +76,7 @@ while [ $# -gt 0 ]; do
             ;;
         -V|--version)
             echo "$version"
-            exit 0
+            exit $rt
             ;;
         *)
             ACTION="${1,,}"
@@ -120,10 +124,10 @@ else
     echo ""
  fi
 
-res=$?
+rt=$?
 
-if [ $res -ne 0 ]; then
-    echo "Error in run for $PNAME"
+if [ $rt -ne 0 ]; then
+    echo "$PNAME Error in 'docker run'"
 fi
 
-exit $res
+exit $rt

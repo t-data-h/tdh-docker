@@ -11,11 +11,12 @@ port="9104"
 myhost="localhost"
 myport="3306"
 myuser="exporter"
-mypass=
+pwfile=
+pw=
 network=
-res=
 ACTION=
 
+# -----------------------------------
 
 usage="
 Initializes a Prometheus 'MySQL' Exporter as a docker container.
@@ -29,18 +30,21 @@ Options:
   -N|--network <name>    = Attach container to Docker bridge network
                            Default uses 'host' networking.
   -p|--port <port>       = Local bind port for the container (default=${port}).
+    --------------           ----------------
   -H|--mysql-host <host> = Hostname of the mysql server.
   -P|--mysql-port <port> = Port number for the mysql server
   -U|--mysql-user <user> = MySQL user (default = exporter)
-  -w|--mysql-pass <pw>   = MySQL password
+  -f|--pwfile     <file> = File containing MySQL password.
   -V|--version           = Show version info and exit.
 
-Any other action than 'run' results in a dry run.
-The container will only start with the run or start action
+Any action other than 'run' results in a 'dry-run'.
+The container will only start with the run or start action.
 The 'pull' command fetches the docker image:version
 "
+
 version="$PNAME : Docker Image Version: ${docker_image}"
 
+# -----------------------------------
 
 validate_network()
 {
@@ -50,21 +54,46 @@ validate_network()
     res=$( docker network ls | awk '{print $2 }' | grep "$net" )
 
     if [ -z "$res" ]; then
-        echo "Creating bridge network: $net"
+        echo " -> Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo " -> Attaching container to existing network '$net'"
     fi
 
     return 0
 }
 
 
+read_password()
+{
+    local prompt="Password: "
+    local pass=
+    local pval=
+
+    read -s -p "$prompt" pass
+    echo ""
+    read -s -p "Repeat $prompt" pval
+    echo ""
+
+    if [[ "$pass" != "$pval" ]]; then
+        return 1
+    fi
+
+    pwfile=$(mktemp /tmp/tdh-mysqlpw.XXXXXXXX)
+    echo $pass > $pwfile
+
+    return 0
+}
+
+# -----------------------------------
+# MAIN
+rt=0
+
 while [ $# -gt 0 ]; do
     case "$1" in
-        -h|--help)
+        'help'|-h|--help)
             echo "$usage"
-            exit 0
+            exit $rt
             ;;
         -N|--network)
             network="$2"
@@ -90,13 +119,14 @@ while [ $# -gt 0 ]; do
             myuser="$2"
             shift
             ;;
-        -w|--mysql-pass)
-            mypass="$2"
+        -f|--pwfile)
+            pwfile="$2"
+            mypw=$(cat $pwfile 2>/dev/null)
             shift
             ;;
-        -V|--version)
+        'version'|-V|--version)
             echo "$version"
-            exit 0
+            exit $rt
             ;;
         *)
             ACTION="${1,,}"
@@ -106,7 +136,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-
 if [ -z "$ACTION" ]; then
     echo "$usage"
     exit 1
@@ -114,11 +143,11 @@ fi
 
 if [ $ACTION == "pull" ]; then
     ( docker pull ${docker_image} )
-    exit 0
+    exit $?
 fi
 
-if [ -z "$mypass" ]; then
-    echo "MySQL password required"
+if [ -z "$mypw" ]; then
+    echo "$PNAME Error,  MySQL password file not provided..."
     exit 1
 fi
 
@@ -132,7 +161,7 @@ else
 fi
 
 cmd="$cmd --network ${network}"
-cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' ${docker_image}"
+cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypw}@(${myhost}:${myport})/' ${docker_image}"
 
 
 echo "
@@ -146,6 +175,7 @@ echo "
 if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container $name"
     ( $cmd )
+    rt=$?
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
@@ -153,10 +183,8 @@ else
     echo ""
 fi
 
-res=$?
-
-if [ $res -ne 0 ]; then
-    echo "ERROR in run for $PNAME"
+if [ $rt -ne 0 ]; then
+    echo "$PNAME ERROR in 'docker run'"
 fi
 
-exit $res
+exit $rt

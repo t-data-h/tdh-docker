@@ -14,7 +14,6 @@ noremove=
 fetch=
 truststore=
 cmd=
-res=
 
 usage="
 Acquires and converts the HDFS metadata image to CSV for 
@@ -33,6 +32,7 @@ Options:
 
 
 ## MAIN
+rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -72,30 +72,22 @@ fi
 
 if ! [ -d $path ]; then 
     echo "Invalid path"
-    exit 1
+    exit 2
 fi
 
-
-## MAIN
-# 
-
-res=
-cmd=
 fsimage="fsimage-${namenode}-${today}"
 targetimage="${path}/${fsimage}"
 csvpath="${path}/${namenode}"
 targetcsv="${path}/${namenode}/${fsimage}.csv"
 
-
 if [ -f "$targetcsv" ]; then
-    echo " => Target file exists, '$csv'.  Please remove first."
-    exit 1
+    echo "$PNAME Error, Target file exists, '$csv'.  Please remove first."
+    exit 3
 fi
 if [ -f "$targetimage" ]; then
-    echo " => Target fsimage exists, remove it first."
-    exit 1
+    echo "$PNAME Error, Target 'fsimage' exists, remove it first."
+    exit 3
 fi
-
 
 # construct our curl cmd
 cmd="curl -X GET"
@@ -107,22 +99,19 @@ fi
 cmd="${cmd}${namenode}:${port}/imagetransfer?getimage=1&txid=latest"
 cmd="$cmd --output $targetimage"
 
-
 # acquire the image
-echo ""
-echo " ( $cmd )" 
+printf "\n ( %s ) \n" $cmd
 ( $cmd )
-res=$?
+rt=$?
 
-echo ""
-if [ $res -eq 0 ]; then 
+if [ $rt -eq 0 ]; then 
     echo " => FSImage acquired: $targetimage"
     if [ -n "$fetch" ]; then
-        exit $res
+        exit $rt
     fi
 else
     echo " => Error in fsimage"
-    exit $res
+    exit $rt
 fi
 
 mkdir -p "$csvpath"
@@ -131,16 +120,15 @@ mkdir -p "$csvpath"
 echo "" 
 echo " ( hdfs oiv -p Delimited -delimiter ',' -i $targetimage -o $targetcsv )"
 ( hdfs oiv -p Delimited -delimiter "," -i $targetimage -o $targetcsv )
-res=$?
+rt=$?
 
-if [ $res -eq 0 ]; then
-    echo ""
-    echo " => fsimage converted to csv: '$targetcsv'"
-    if [ -f $targetcsv ] && [ -z "$noremove" ]; then
+if [ $rt -eq 0 ]; then
+    printf " \n => fsimage converted to csv: '$targetcsv' \n"
+    if [[ -f $targetcsv && -z "$noremove" ]]; then
         echo "Removing fsimage..."
         rm $targetimage
     fi
 fi
 
 echo "Finished."
-exit 0
+exit $rt

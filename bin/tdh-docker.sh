@@ -12,7 +12,6 @@ usage="Usage: $PNAME {--prefix <pfx>} [start|stop|status]"
 version="$PNAME: $version"
 
 
-
 if [ $# -eq 0 ]; then
     echo "$usage"
     exit 1

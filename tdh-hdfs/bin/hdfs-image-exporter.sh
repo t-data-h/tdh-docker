@@ -14,6 +14,8 @@ res=
 imagepath=
 ACTION=
 
+# -----------------------------------
+
 usage="
 Initializes a Docker container for the Prometheus HDFS Image Exporter.
 
@@ -21,7 +23,7 @@ Synopsis:
   $PNAME [options] run|pull
 
 Options:
-  -h|--help               = Display usage and exit.
+  -h|--help               = Show usage and exit.
   -i|--fsimagepath <path> = Local path to fsimage directory.
   -n|--name <name>        = Name of the Docker Container instance.
   -N|--network <name>     = Attach container to Docker bridge network
@@ -29,14 +31,14 @@ Options:
   -p|--port <port>        = Local bind port for the container (default=${port}).
   -V|--version            = Show version info and exit.
 
-Any other action than 'run' results in a dry run.
+Any action other than 'run' results in a 'dry-run'.
 The container will only start with the run action.
 The 'pull' command fetches the docker image:version
 "
 
 version="$PNAME : Docker Image Version:  ${docker_image}"
 
-
+# -----------------------------------
 
 validate_network()
 {
@@ -46,18 +48,19 @@ validate_network()
     res=$( docker network ls | awk '{print $2 }' | grep "$net" )
 
     if [ -z "$res" ]; then
-        echo "Creating bridge network: $net"
+        echo " -> Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to bridge network '$net'"
+        echo " -> Attaching container to bridge network '$net'"
     fi
 
     return 0
 }
 
 
+# -----------------------------------
 # MAIN
-
+rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -99,17 +102,17 @@ fi
 
 if [ "$ACTION" == "pull" ]; then
     ( docker pull $docker_image )
-    exit 0
+    exit $?
 fi
 
 if [ -z "$imagepath" ]; then
     echo "Error. --fsimagepath is required"
-    exit 1
+    exit 2
 fi
 
 if ! [ -d "$imagepath" ]; then
     echo "Image path is not a directory '$imagepath'"
-    exit 1
+    exit 2
 fi
 
 
@@ -122,11 +125,9 @@ else
     network="host"
 fi
 
-
 cmd="$cmd --network ${network}"
 cmd="$cmd --mount type=bind,src=${imagepath},dst=/fsimage-location"
 cmd="$cmd ${docker_image}"
-
 
 echo "
   TDH Docker Container: '${name}'
@@ -138,6 +139,7 @@ echo "
 if [[ "$ACTION" == "run" || "$ACTION" == "start" ]]; then
     echo "Starting container '$name'"
     ( $cmd -e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m" )
+    rt=$?
 else
     echo "  <DRYRUN> - Command to execute: "
     echo ""
@@ -145,10 +147,8 @@ else
     echo ""
  fi
 
-res=$?
-
-if [ $res -ne 0 ]; then
-    echo "Error in run for $PNAME"
+if [ $rt -ne 0 ]; then
+    echo "$PNAME Error in 'docker run'"
 fi
 
-exit $res
+exit $rt
