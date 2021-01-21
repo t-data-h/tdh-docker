@@ -13,22 +13,20 @@ res=
 ACTION=
 
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options] run|start"
-    echo "   -h|--help             = Display usage and exit."
-    echo "   -N|--network <name>   = Attach container to Docker network."
-    echo "   -n|--name <name>      = Name of the Docker Container instance."
-    echo "   -p|--port <port>      = Local bind port for the container (default=${port})."
-    echo "   -R|--rmhost <host>    = Hostname of the RM Master."
-    echo "   -P|--rmport <port>    = Port number for the ResourceManager."
-    echo ""
-    echo "Any other action than 'run|start' results in a dry run."
-    echo "The container will only start with the run or start action"
-    echo ""
-}
+usage="
+Synopsis:
+  $PNAME [options] run|start
 
+Options:
+   -h|--help             = Display usage and exit.
+   -N|--network <name>   = Attach container to Docker network.
+   -n|--name <name>      = Name of the Docker Container instance.
+   -p|--port <port>      = Local bind port for the container (default=${port}).
+   -R|--rmhost <host>    = Hostname of the RM Master.
+   -P|--rmport <port>    = Port number for the ResourceManager.
+ 
+Any action other than 'run|start' results in a dry run.
+"
 
 
 # MAIN
@@ -36,7 +34,7 @@ usage()
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -N|--network)
@@ -68,7 +66,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
 fi
 
 res=$?

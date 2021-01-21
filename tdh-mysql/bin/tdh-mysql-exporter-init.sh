@@ -17,35 +17,29 @@ res=
 ACTION=
 
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options] run|pull"
-    echo "   -h|--help              = Display usage and exit."
-    echo "   -n|--name <name>       = Name of the Docker Container instance."
-    echo "   -N|--network <name>    = Attach container to Docker bridge network"
-    echo "                            Default uses 'host' networking."
-    echo "   -p|--port <port>       = Local bind port for the container (default=${port})."
-    echo "   -H|--mysql-host <host> = Hostname of the mysql server."
-    echo "   -P|--mysql-port <port> = Port number for the mysql server"
-    echo "   -u|--mysql-user <user> = MySQL user (default = exporter)"
-    echo "   -w|--mysql-pass <pw>   = MySQL password"
-    echo "   -V|--version           = Show version info and exit"
-    echo ""
-    echo "  Any other action than 'run' results in a dry run."
-    echo "  The container will only start with the run or start action"
-    echo "  The 'pull' command fetches the docker image:version"
-    echo ""
-}
+usage="
+Initializes a Prometheus 'MySQL' Exporter as a docker container.
 
+Synopsis:
+  $PNAME [options] run|pull
 
-version()
-{
-    echo ""
-    echo "$PNAME"
-    echo "  Docker Image Version: ${docker_image}"
-    echo ""
-}
+Options:
+  -h|--help              = Display usage and exit.
+  -n|--name <name>       = Name of the Docker Container instance.
+  -N|--network <name>    = Attach container to Docker bridge network
+                           Default uses 'host' networking.
+  -p|--port <port>       = Local bind port for the container (default=${port}).
+  -H|--mysql-host <host> = Hostname of the mysql server.
+  -P|--mysql-port <port> = Port number for the mysql server
+  -u|--mysql-user <user> = MySQL user (default = exporter)
+  -w|--mysql-pass <pw>   = MySQL password
+  -V|--version           = Show version info and exit.
+
+Any other action than 'run' results in a dry run.
+The container will only start with the run or start action
+The 'pull' command fetches the docker image:version
+"
+version="$PNAME : Docker Image Version: ${docker_image}"
 
 
 validate_network()
@@ -69,7 +63,7 @@ validate_network()
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -N|--network)
@@ -101,7 +95,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -V|--version)
-            version
+            echo "$version"
             exit 0
             ;;
         *)
@@ -114,7 +108,8 @@ done
 
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
+    exit 1
 fi
 
 if [ $ACTION == "pull" ]; then
@@ -140,16 +135,15 @@ cmd="$cmd --network ${network}"
 cmd="$cmd -e DATA_SOURCE_NAME='${myuser}:${mypass}@(${myhost}:${myport})/' ${docker_image}"
 
 
-echo ""
-echo "  TDH Docker Container: '${name}'"
-echo "  Docker Image: ${docker_image}"
-echo "  MySQL Endpoint: ${myuser}@${myhost}:${myport}/$path"
-echo "  Docker Network: ${network}"
-echo "  Local port: ${port}"
-echo ""
+echo "
+  TDH Docker Container: '${name}'
+  Docker Image: ${docker_image}
+  MySQL Endpoint: ${myuser}@${myhost}:${myport}/$path
+  Docker Network: ${network}
+  Local port: ${port}
+"
 
-
-if [ $ACTION == "run" || $ACTION == "start" ]; then
+if [[ $ACTION == "run" || $ACTION == "start" ]]; then
     echo "Starting container $name"
 
     ( $cmd )

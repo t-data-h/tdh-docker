@@ -14,31 +14,25 @@ network=
 res=
 ACTION=
 
-usage()
-{
-    echo ""
-    echo "Usage: $PNAME [options] run|pull"
-    echo "   -h|--help            = Display usage and exit."
-    echo "   -N|--network <name>  = Attach container to Docker bridge network"
-    echo "   -n|--name <name>     = Name of the Docker Container instance."
-    echo "   -p|--port <port>     = Local bind port for the container (default=${port})."
-    echo "   -v|--volume <name>   = Optional volume name. Defaults to $name-data1"
-    echo "   -V|--version         = Show version info and exit"
-    echo ""
-    echo "  Any other action than 'run' results in a dry run."
-    echo "  The container will only start with the run or start action."
-    echo "  The 'pull' command fetches the docker image:version"
-    echo ""
-}
+usage="
+Initializes a Prometheus Server as a docker container.
 
+Synopsis:
+  $PNAME [options] run|pull
 
-version()
-{
-    echo ""
-    echo "$PNAME"
-    echo "  Docker Image Version: ${docker_image}"
-    echo ""
-}
+Options:
+  -h|--help            = Display usage and exit.
+  -N|--network <name>  = Attach container to Docker bridge network
+  -n|--name <name>     = Name of the Docker Container instance.
+  -p|--port <port>     = Local bind port for the container (default=${port}).
+  -v|--volume <name>   = Optional volume name. Defaults to $name-data1
+  -V|--version         = Show version info and exit
+
+Any other action than 'run' results in a dry run.
+The container will only start with the run or start action.
+The 'pull' command fetches the docker image:version
+"
+version="$PNAME : Docker Image Version: ${docker_image}"
 
 
 validate_network()
@@ -65,7 +59,7 @@ validate_network()
 while [ $# -gt 0 ]; do
     case "$1" in
         -h|--help)
-            usage
+            echo "$usage"
             exit 0
             ;;
         -n|--name)
@@ -89,7 +83,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -V|--version)
-            version
+            echo "$version"
             exit 0
             ;;
         *)
@@ -101,7 +95,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$ACTION" ]; then
-    usage
+    echo "$usage"
+    exit 1
 fi
 
 volname="${name}-data1"
