@@ -11,9 +11,9 @@ rmport="8088"
 httpscheme="http"
 metricpath="ws/v1/cluster/metrics"
 network=
-res=
 ACTION=
 
+# -----------------------------------
 
 usage="
 Initializes a new YARN Prometheus Exporter container in docker.
@@ -37,9 +37,10 @@ Any other action than 'run' results in a dry run.
 The container will only start with the run or start action.
 The 'pull' command fetches the docker image:version
 "
+
 version="$PNAME :  Docker Image Version: ${docker_image}"
 
-
+# -----------------------------------
 
 validate_network()
 {
@@ -49,15 +50,18 @@ validate_network()
     res=$( docker network ls | awk '{print $2 }' | grep "$net" )
 
     if [ -z "$res" ]; then
-        echo "Creating bridge network: $net"
+        echo " -> Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo " -> Attaching container to existing network '$net'"
     fi
 
     return 0
 }
 
+# -----------------------------------
+# MAIN
+rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -101,7 +105,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-
 if [ -z "$ACTION" ]; then
     echo "$usage"
     exit 1
@@ -118,11 +121,11 @@ fi
 
 cmd="$cmd --network ${network}"
 cmd="$cmd --env YARN_PROMETHEUS_LISTEN_ADDR=:${port} \
---env YARN_PROMETHEUS_ENDPOINT_SCHEME=${httpscheme} \
---env YARN_PROMETHEUS_ENDPOINT_HOST=${rmhost} \
---env YARN_PROMETHEUS_ENDPOINT_PORT=${rmport} \
---env YARN_PROMETHEUS_ENDPOINT_PATH=${path} \
-${docker_image}"
+  --env YARN_PROMETHEUS_ENDPOINT_SCHEME=${httpscheme} \
+  --env YARN_PROMETHEUS_ENDPOINT_HOST=${rmhost} \
+  --env YARN_PROMETHEUS_ENDPOINT_PORT=${rmport} \
+  --env YARN_PROMETHEUS_ENDPOINT_PATH=${path} \
+  ${docker_image}"
 
 echo "
   TDH Docker Container: '${name}'
@@ -133,21 +136,18 @@ echo "
 "
 
 if [[ "$ACTION" == "run" || "$ACTION" == "start" ]]; then
-    echo "Starting container $name"
+    echo " -> Starting container $name"
     ( $cmd )
 elif [ "$ACTION" == "pull" ]; then
     ( docker pull ${docker_image} )
 else
-    echo "  <DRYRUN> - Command to execute: "
-    echo ""
-    echo " ( $cmd ) "
-    echo ""
+    printf " <DRYRUN> - Command to execute: \n\n ( %s ) \n\n" $cmd
 fi
 
-res=$?
+rt=$?
 
-if [ $res -ne 0 ]; then
-    echo "ERROR in run for $PNAME"
+if [ $rt -ne 0 ]; then
+    echo "$PNAME ERROR in command."
 fi
 
-exit $res
+exit $rt

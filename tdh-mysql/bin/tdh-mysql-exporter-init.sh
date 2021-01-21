@@ -173,18 +173,16 @@ echo "
 "
 
 if [[ $ACTION == "run" || $ACTION == "start" ]]; then
-    echo "Starting container $name"
+    echo " -> Starting container $name"
     ( $cmd )
-    rt=$?
 else
-    echo "  <DRYRUN> - Command to execute: "
-    echo ""
-    echo " ( $cmd ) "
-    echo ""
+    printf "  <DRYRUN> - Command to execute: \n\n ( %s ) \n\n" $cmd
 fi
 
+rt=$?
+
 if [ $rt -ne 0 ]; then
-    echo "$PNAME ERROR in 'docker run'"
+    echo "$PNAME ERROR in docker command"
 fi
 
 exit $rt

@@ -125,10 +125,10 @@ rt=$?
 if [ $rt -eq 0 ]; then
     printf " \n => fsimage converted to csv: '$targetcsv' \n"
     if [[ -f $targetcsv && -z "$noremove" ]]; then
-        echo "Removing fsimage..."
+        echo " -> Removing fsimage..."
         rm $targetimage
     fi
 fi
 
-echo "Finished."
+echo "$PNAME Finished."
 exit $rt

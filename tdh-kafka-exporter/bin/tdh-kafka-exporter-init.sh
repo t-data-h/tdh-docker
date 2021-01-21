@@ -1,6 +1,8 @@
 #!/bin/bash
 #
-# Prometheus Server
+# Prometheus Kafka Exporter container initialization.
+
+# docker run -ti --rm -p 9308:9308 danielqsj/kafka-exporter --kafka.server=kafka:9092 [--kafka.server=another-server ...]
 #
 PNAME=${0##*\/}
 tdh_path=$(dirname "$(readlink -f "$0")")
@@ -11,8 +13,9 @@ name="tdh-kafka-exporter1"
 port="9108"
 brokers=
 network=
-res=
 ACTION=
+
+# -----------------------------------
 
 usage="
 Initializes a Prometheus Kafka Exporter as a Docker container.
@@ -35,6 +38,7 @@ The 'pull' command fetches the docker image:version.
 
 version="$PNAME : Docker Image Version: ${docker_image}"
 
+# -----------------------------------
 
 validate_network()
 {
@@ -54,8 +58,9 @@ validate_network()
 }
 
 
+# -----------------------------------
 # MAIN
-
+rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -102,7 +107,6 @@ if [ -z "$brokers" ]; then
 fi
 
 brokers=$(echo $brokers | sed 's/\,/ /g')
-
 cmd="docker run --name $name -d"
 
 if [ -n "$network" ]; then
@@ -111,8 +115,6 @@ if [ -n "$network" ]; then
 else
     network="host"
 fi
-
-# docker run -ti --rm -p 9308:9308 danielqsj/kafka-exporter --kafka.server=kafka:9092 [--kafka.server=another-server ...]
 
 cmd="$cmd --network ${network} -p $port:$port"
 
@@ -129,21 +131,18 @@ echo "
 "
 
 if [[ $ACTION == "run" || $ACTION == "start" ]]; then
-    echo "Starting container '$name'"
+    echo " -> Starting container '$name'"
     ( $cmd )
 elif [ $ACTION == "pull" ]; then
     ( docker pull $docker_image )
 else
-    echo "  <DRYRUN> - Command to execute: "
-    echo ""
-    echo "$cmd"
-    echo ""
+    printf "  <DRYRUN> - Command to execute: \n\n ( %s ) \n\n" $cmd
  fi
 
-res=$?
+rt=$?
 
-if [ $res -ne 0 ]; then
-    echo "Error in run for $PNAME"
+if [ $rt -ne 0 ]; then
+    echo "$PNAME Error in docker command"
 fi
 
-exit $res
+exit $rt

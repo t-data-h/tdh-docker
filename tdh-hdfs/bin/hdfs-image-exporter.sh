@@ -141,14 +141,11 @@ if [[ "$ACTION" == "run" || "$ACTION" == "start" ]]; then
     ( $cmd -e "JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m" )
     rt=$?
 else
-    echo "  <DRYRUN> - Command to execute: "
-    echo ""
-    echo "$cmd -e \"JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m\" "
-    echo ""
+    printf "  <DRYRUN> - Command to execute: \n\n ( %s -e 'JAVA_OPTS=-server -XX:+UseG1GC -Xmx1024m' \n\n" $cmd
  fi
 
 if [ $rt -ne 0 ]; then
-    echo "$PNAME Error in 'docker run'"
+    echo "$PNAME Error in docker command"
 fi
 
 exit $rt

@@ -9,7 +9,6 @@ rmhost="localhost"
 rmport="8088"
 metricpath="ws/v1/cluster/apps?state=running"
 network=
-res=
 ACTION=
 
 
@@ -30,6 +29,7 @@ Any action other than 'run|start' results in a dry run.
 
 
 # MAIN
+rt=0 
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -70,12 +70,11 @@ if [ -z "$ACTION" ]; then
     exit 0
 fi
 
-res=$?
-
-if [ $res -ne 0 ]; then
-    echo "Error in run for $PNAME"
-fi
-
 ( $tdh_path/tdh-yarn-exporter-init.sh -n $name -p $port -R $rmhost -P $rmport -m $metricpath $ACTION )
 
-exit $res
+rt=$?
+if [ $rt -ne 0 ]; then
+    echo "$PNAME Error in 'docker run'"
+fi
+
+exit $rt

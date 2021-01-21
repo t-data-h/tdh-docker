@@ -12,7 +12,6 @@ docker_image="prom/graphite-exporter:v0.7.0"
 name="tdh-spark-exporter1"
 port="9109"
 network=
-res=
 ACTION=
 
 # -----------------------------------
@@ -47,10 +46,10 @@ validate_network()
     res=$( docker network ls | awk '{print $2 }' | grep "$net" )
 
     if [ -z "$res" ]; then
-        echo "Creating bridge network: $net"
+        echo " -> Creating bridge network: $net"
         ( docker network create --driver bridge $net )
     else
-        echo "Attaching container to existing network '$net'"
+        echo " -> Attaching container to existing network '$net'"
     fi
 
     return 0
@@ -113,21 +112,18 @@ echo "
 "
 
 if [[ $ACTION == "run" || $ACTION == "start" ]]; then
-    echo "Starting container '$name'"
+    echo " -> Starting container '$name'"
     ( $cmd )
 elif [ $ACTION == "pull" ]; then
     ( docker pull ${docker_image} )
 else
-    echo "  <DRYRUN> - Command to execute: "
-    echo ""
-    echo "$cmd"
-    echo ""
+    printf "  <DRYRUN> - Command to execute: \n\n ( %s ) \n\n" $cmd
  fi
 
 rt=$?
 
 if [ $rt -ne 0 ]; then
-    echo "$PNAME Error in 'docker run'"
+    echo "$PNAME Error in docker command"
 fi
 
 exit $rt
