@@ -23,7 +23,7 @@ curl -X GET "http://$nn:50070/imagetransfer?getimage=1&txid=latest" --output $ou
 
 * FSImage conversion to CSV
 ```
-hdfs oiv  -p Delimited -delimiter "," -i $fsimage_dir/$infile \
+hdfs oiv -p Delimited -delimiter "," -i $fsimage_dir/$infile \
 -o $oivexport_dir/fsimage-$namenode.csv
 ```
 
@@ -34,7 +34,7 @@ This makes use of the YARN Prometheus exporter:
 
 *https://github.com/PBWebMedia/yarn-prometheus-exporter*
 
-* Example Yarn Rest API metrics scraped
+* Example of Yarn Rest API metrics scraped
 ```
 curl -X GET "http://$resourcemanager:8080/ws/v1/cluster/metrics"
 ```
@@ -142,9 +142,9 @@ executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 
 ## MySQL
 Collecting MySQL metrics is useful for keeping track of IO activity, slave
-replication status and other useful metrics and ascertaining the health of Hadoop
-ecosystem as a whole. A community supported Prometheus exporter has been added
-and runs as docker process on reporting server.
+replication status and ascertaining the health of Hadoop ecosystem as a whole. 
+A community supported Prometheus exporter has been added and runs as docker 
+process on reporting server.
 
 * https://github.com/prometheus/mysqld_exporter  
 
