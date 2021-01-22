@@ -1,7 +1,7 @@
-TDH-Docker - Version 20.09
+TDH-Docker - Version 21.01
 ==========================
 
-  A collection of docker containers for supporting Hadoop monitoring.
+  A collection of docker containers for monitoring a Hadoop stack.
 
 
 ## Hadoop Metrics

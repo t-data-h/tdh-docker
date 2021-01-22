@@ -6,10 +6,10 @@ tdh_path=$(dirname "$(readlink -f "$0")")
 
 runscript="$tdh_path/tdh-docker-run.sh"
 prefix="tdh"
-version="v20.09"
+vers="v21.01"
 
 usage="Usage: $PNAME {--prefix <pfx>} [start|stop|status]"
-version="$PNAME: $version"
+version="$PNAME: $vers"
 
 
 if [ $# -eq 0 ]; then
