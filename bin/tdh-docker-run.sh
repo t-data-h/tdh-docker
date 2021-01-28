@@ -20,8 +20,10 @@ as defined by the environment variable \$TDH_CONTAINERS
 Synopsis:
   $PNAME <action> 
  
-Where action is the docker command to run. eg start|stop|restart|inspect
+Where action is the docker command to run. 
+  eg.  start|stop|restart|inspect
 "
+
 
 if [ -z "$ACTION" ]; then
     echo "$usage"

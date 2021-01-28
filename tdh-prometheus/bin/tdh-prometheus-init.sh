@@ -35,7 +35,8 @@ Any action other than 'run' results in a 'dry-run'.
 The container will only start with the run or start action.
 The 'pull' command fetches the docker image:version
 "
-version="$PNAME : Docker Image Version: ${docker_image}"
+
+version="$PNAME : Docker Image: ${docker_image}"
 
 # -----------------------------------
 

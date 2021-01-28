@@ -23,11 +23,13 @@ Synopsis:
   $PNAME [options]  <nn-host>  <path>
 
 Options:
-  -h|--help              = Display usage and exit.
-  -p|--port <port>       = Namenode RPC Port (default=50070)
-  -F|--fetch-only        = Only fetch the fsimage, do not convert.
-  -R|--no-remove         = Do not remove fetched fsimage once converted.
-  -T|--truststore <path> = Path to pem truststore, enables and use https.
+  -h|--help              : Display usage and exit.
+  -p|--port <port>       : Namenode RPC Port (default=50070)
+  -F|--fetch-only        : Only fetch the fsimage, do not convert.
+  -R|--no-remove         : Do not remove fetched fsimage once converted.
+  -T|--truststore <path> : Path to pem truststore, enables and use https.
+  <nn-host>              : Hostname of 'active' namenode.
+  <path>                 : Path to write the fsimage file.
 "
 
 
@@ -36,7 +38,7 @@ rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        -h|--help)
+        'help'|-h|--help)
             echo "$usage"
             exit 0
             ;;
@@ -63,15 +65,21 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+curl=$(which curl 2>/dev/null)
+
+if [ -z "$curl" ]; then
+    echo "$PNAME Error, 'curl' command not found in PATH"
+    exit 1
+fi
 
 if [[ -z "$namenode" || -z "$path" ]]; then
-    echo " Error, required parameters missing." 
+    echo "$PNAME Error, required parameters missing." 
     echo "$usage"
     exit 1
 fi
 
 if ! [ -d $path ]; then 
-    echo "Invalid path"
+    echo "$PNAME Error, Invalid path '$path'"
     exit 2
 fi
 
@@ -89,7 +97,7 @@ if [ -f "$targetimage" ]; then
     exit 3
 fi
 
-# construct our curl cmd
+# construct curl cmd
 cmd="curl -X GET"
 if [ -n "$truststore" ]; then
     cmd="$cmd --cacert \"${truststore}\" https://"
@@ -114,7 +122,13 @@ else
     exit $rt
 fi
 
-mkdir -p "$csvpath"
+( mkdir -p "$csvpath" )
+rt=$?
+
+if [ $rt -ne 0 ]; then 
+    echo "$PNAME Error in mkdir for '$cvspath'"
+    exit 2
+fi
 
 # convert image to csv
 echo "" 
@@ -123,7 +137,7 @@ echo " ( hdfs oiv -p Delimited -delimiter ',' -i $targetimage -o $targetcsv )"
 rt=$?
 
 if [ $rt -eq 0 ]; then
-    printf " \n => fsimage converted to csv: '$targetcsv' \n"
+    printf " \n -> fsimage converted to csv: '$targetcsv' \n"
     if [[ -f $targetcsv && -z "$noremove" ]]; then
         echo " -> Removing fsimage..."
         rm $targetimage
